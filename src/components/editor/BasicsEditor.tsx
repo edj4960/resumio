@@ -12,28 +12,41 @@ type BasicsEditorProps = {
 };
 
 export default function BasicsEditor({ basics, errors, onChange }: BasicsEditorProps) {
+  const nameErrorId = errors.name ? "basics-name-error" : undefined;
+  const titleErrorId = errors.title ? "basics-title-error" : undefined;
+
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <label className="form-control">
         <span className="label-text">Name</span>
         <input
+          id="basics-name"
           className={`input input-bordered ${errors.name ? "input-error" : ""}`}
           value={basics.name}
+          aria-invalid={Boolean(errors.name)}
+          aria-describedby={nameErrorId}
           onChange={(event) => onChange({ ...basics, name: event.target.value })}
         />
         {errors.name ? (
-          <span className="text-sm text-error">{errors.name}</span>
+          <span id={nameErrorId} className="text-sm text-error" role="alert">
+            {errors.name}
+          </span>
         ) : null}
       </label>
       <label className="form-control">
         <span className="label-text">Title</span>
         <input
+          id="basics-title"
           className={`input input-bordered ${errors.title ? "input-error" : ""}`}
           value={basics.title}
+          aria-invalid={Boolean(errors.title)}
+          aria-describedby={titleErrorId}
           onChange={(event) => onChange({ ...basics, title: event.target.value })}
         />
         {errors.title ? (
-          <span className="text-sm text-error">{errors.title}</span>
+          <span id={titleErrorId} className="text-sm text-error" role="alert">
+            {errors.title}
+          </span>
         ) : null}
       </label>
       <label className="form-control">

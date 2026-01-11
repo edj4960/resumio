@@ -33,29 +33,41 @@ export default function ModernTemplate({ resume }: { resume: Resume }) {
           <p className="text-xs uppercase tracking-widest text-base-content/50">
             Skills
           </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {resume.skills.map((skill, index) => (
-              <span key={`${skill}-${index}`} className="badge badge-outline">
-                {skill}
-              </span>
-            ))}
-          </div>
+          {resume.skills.length === 0 ? (
+            <p className="mt-3 text-sm text-base-content/60">
+              Add your strongest skills to stand out.
+            </p>
+          ) : (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {resume.skills.map((skill, index) => (
+                <span key={`${skill}-${index}`} className="badge badge-outline">
+                  {skill}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
         <div>
           <p className="text-xs uppercase tracking-widest text-base-content/50">
             Education
           </p>
-          <div className="mt-3 space-y-2 text-sm">
-            {resume.education.map((item, index) => (
-              <div key={`${item.school}-${index}`} className="print-avoid-break">
-                <p className="font-medium">{item.school}</p>
-                <p className="text-base-content/70">{item.program}</p>
-                <p className="text-xs text-base-content/60">
-                  {item.startDate} - {item.endDate}
-                </p>
-              </div>
-            ))}
-          </div>
+          {resume.education.length === 0 ? (
+            <p className="mt-3 text-sm text-base-content/60">
+              Add education details or certifications here.
+            </p>
+          ) : (
+            <div className="mt-3 space-y-2 text-sm">
+              {resume.education.map((item, index) => (
+                <div key={`${item.school}-${index}`} className="print-avoid-break">
+                  <p className="font-medium">{item.school}</p>
+                  <p className="text-base-content/70">{item.program}</p>
+                  <p className="text-xs text-base-content/60">
+                    {item.startDate} - {item.endDate}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </aside>
 
@@ -74,32 +86,42 @@ export default function ModernTemplate({ resume }: { resume: Resume }) {
             <h2 className="text-lg font-semibold">Featured Projects</h2>
             <span className="badge badge-outline">Portfolio</span>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            {resume.projects.map((project, index) => (
-              <div
-                key={`${project.name}-${index}`}
-                className="preview-card card bg-base-100 shadow print-avoid-break"
-              >
-                <div className="card-body gap-3">
-                  <h3 className="card-title text-lg">{project.name}</h3>
-                  <p className="text-sm text-base-content/70">
-                    {project.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {project.stack.map((tech, techIndex) => (
-                      <span key={`${tech}-${techIndex}`} className="badge badge-ghost">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="card-actions justify-between text-sm text-base-content/70">
-                    <span>{project.repoUrl}</span>
-                    <span>{project.liveUrl}</span>
+          {resume.projects.length === 0 ? (
+            <div className="card bg-base-100 shadow">
+              <div className="card-body">
+                <p className="text-sm text-base-content/60">
+                  Add projects to showcase recent launches and experiments.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2">
+              {resume.projects.map((project, index) => (
+                <div
+                  key={`${project.name}-${index}`}
+                  className="preview-card card bg-base-100 shadow print-avoid-break"
+                >
+                  <div className="card-body gap-3">
+                    <h3 className="card-title text-lg">{project.name}</h3>
+                    <p className="text-sm text-base-content/70">
+                      {project.description}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {project.stack.map((tech, techIndex) => (
+                        <span key={`${tech}-${techIndex}`} className="badge badge-ghost">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="card-actions justify-between text-sm text-base-content/70">
+                      <span>{project.repoUrl}</span>
+                      <span>{project.liveUrl}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="preview-card card bg-base-100 shadow">
@@ -108,29 +130,35 @@ export default function ModernTemplate({ resume }: { resume: Resume }) {
               <h2 className="text-lg font-semibold">Experience</h2>
               <span className="badge badge-outline">Resume</span>
             </div>
-            <div className="space-y-5">
-              {resume.experience.map((role, index) => (
-                <div
-                  key={`${role.company}-${index}`}
-                  className="space-y-2 print-avoid-break"
-                >
-                  <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-                    <div>
-                      <h3 className="text-base font-semibold">{role.role}</h3>
-                      <p className="text-base-content/70">{role.company}</p>
+            {resume.experience.length === 0 ? (
+              <p className="text-sm text-base-content/60">
+                Add experience entries to share your recent roles.
+              </p>
+            ) : (
+              <div className="space-y-5">
+                {resume.experience.map((role, index) => (
+                  <div
+                    key={`${role.company}-${index}`}
+                    className="space-y-2 print-avoid-break"
+                  >
+                    <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <h3 className="text-base font-semibold">{role.role}</h3>
+                        <p className="text-base-content/70">{role.company}</p>
+                      </div>
+                      <span className="text-sm text-base-content/60">
+                        {role.startDate} - {role.endDate}
+                      </span>
                     </div>
-                    <span className="text-sm text-base-content/60">
-                      {role.startDate} - {role.endDate}
-                    </span>
+                    <ul className="list-disc space-y-1 pl-5 text-sm text-base-content/80">
+                      {role.bullets.map((bullet, bulletIndex) => (
+                        <li key={`${bullet}-${bulletIndex}`}>{bullet}</li>
+                      ))}
+                    </ul>
                   </div>
-                  <ul className="list-disc space-y-1 pl-5 text-sm text-base-content/80">
-                    {role.bullets.map((bullet, bulletIndex) => (
-                      <li key={`${bullet}-${bulletIndex}`}>{bullet}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>

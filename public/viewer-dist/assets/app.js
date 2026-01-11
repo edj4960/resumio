@@ -71,87 +71,106 @@ const renderClassic = (resume) => {
 
       <section class="mt-6 space-y-3">
         <p class="section-label text-xs uppercase text-base-content/60">Experience</p>
-        <div class="space-y-5">
-          ${resume.experience
-            .map(
-              (role) => `
-              <div class="space-y-2 print-avoid-break">
-                <div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <h2 class="text-lg font-semibold">${escapeHtml(role.role)}</h2>
-                    <p class="text-base-content/70">${escapeHtml(role.company)}</p>
-                  </div>
-                  <span class="text-sm text-base-content/60">${escapeHtml(
-                    role.startDate,
-                  )} - ${escapeHtml(role.endDate)}</span>
-                </div>
-                <ul class="list-disc space-y-1 pl-5 text-base-content/80">
-                  ${role.bullets
-                    .map((bullet) => `<li>${escapeHtml(bullet)}</li>`)
-                    .join("")}
-                </ul>
-              </div>
-            `,
-            )
-            .join("")}
-        </div>
+        ${
+          resume.experience.length === 0
+            ? `<p class="text-sm text-base-content/60">Add experience entries to highlight your roles and impact.</p>`
+            : `<div class="space-y-5">
+                ${resume.experience
+                  .map(
+                    (role) => `
+                    <div class="space-y-2 print-avoid-break">
+                      <div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+                        <div>
+                          <h2 class="text-lg font-semibold">${escapeHtml(role.role)}</h2>
+                          <p class="text-base-content/70">${escapeHtml(role.company)}</p>
+                        </div>
+                        <span class="text-sm text-base-content/60">${escapeHtml(
+                          role.startDate,
+                        )} - ${escapeHtml(role.endDate)}</span>
+                      </div>
+                      <ul class="list-disc space-y-1 pl-5 text-base-content/80">
+                        ${role.bullets
+                          .map((bullet) => `<li>${escapeHtml(bullet)}</li>`)
+                          .join("")}
+                      </ul>
+                    </div>
+                  `,
+                  )
+                  .join("")}
+              </div>`
+        }
       </section>
 
       <section class="mt-6 space-y-3">
         <p class="section-label text-xs uppercase text-base-content/60">Projects</p>
-        <div class="space-y-4">
-          ${resume.projects
-            .map(
-              (project) => `
-              <div class="space-y-1 print-avoid-break">
-                <h3 class="text-base font-semibold">${escapeHtml(project.name)}</h3>
-                <p class="text-sm text-base-content/70">${escapeHtml(
-                  project.description,
-                )}</p>
-                <div class="flex flex-wrap gap-2 text-xs text-base-content/60">
-                  ${project.stack
-                    .map(
-                      (tech) => `<span class="badge badge-outline">${escapeHtml(tech)}</span>`,
-                    )
-                    .join("")}
-                </div>
-              </div>
-            `,
-            )
-            .join("")}
-        </div>
+        ${
+          resume.projects.length === 0
+            ? `<p class="text-sm text-base-content/60">Add projects to showcase your portfolio work.</p>`
+            : `<div class="space-y-4">
+                ${resume.projects
+                  .map(
+                    (project) => `
+                    <div class="space-y-1 print-avoid-break">
+                      <h3 class="text-base font-semibold">${escapeHtml(project.name)}</h3>
+                      <p class="text-sm text-base-content/70">${escapeHtml(
+                        project.description,
+                      )}</p>
+                      <div class="flex flex-wrap gap-2 text-xs text-base-content/60">
+                        ${project.stack
+                          .map(
+                            (tech) =>
+                              `<span class="badge badge-outline">${escapeHtml(tech)}</span>`,
+                          )
+                          .join("")}
+                      </div>
+                    </div>
+                  `,
+                  )
+                  .join("")}
+              </div>`
+        }
       </section>
 
       <section class="mt-6 space-y-3">
         <p class="section-label text-xs uppercase text-base-content/60">Skills</p>
-        <div class="flex flex-wrap gap-2">
-          ${resume.skills
-            .map((skill) => `<span class="badge badge-outline">${escapeHtml(skill)}</span>`)
-            .join("")}
-        </div>
+        ${
+          resume.skills.length === 0
+            ? `<p class="text-sm text-base-content/60">List your core skills to round out the resume.</p>`
+            : `<div class="flex flex-wrap gap-2">
+                ${resume.skills
+                  .map(
+                    (skill) => `<span class="badge badge-outline">${escapeHtml(skill)}</span>`,
+                  )
+                  .join("")}
+              </div>`
+        }
       </section>
 
       <section class="mt-6 space-y-3">
         <p class="section-label text-xs uppercase text-base-content/60">Education</p>
-        <div class="space-y-3">
-          ${resume.education
-            .map(
-              (item) => `
-              <div class="print-avoid-break">
-                <div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <h3 class="text-base font-semibold">${escapeHtml(item.school)}</h3>
-                    <p class="text-sm text-base-content/70">${escapeHtml(item.program)}</p>
-                  </div>
-                  <span class="text-sm text-base-content/60">${escapeHtml(
-                    item.startDate,
-                  )} - ${escapeHtml(item.endDate)}</span>
-                </div>
-              </div>
-            `,
-            )
-            .join("")}
-        </div>
+        ${
+          resume.education.length === 0
+            ? `<p class="text-sm text-base-content/60">Add education entries for degrees or certifications.</p>`
+            : `<div class="space-y-3">
+                ${resume.education
+                  .map(
+                    (item) => `
+                    <div class="print-avoid-break">
+                      <div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+                        <div>
+                          <h3 class="text-base font-semibold">${escapeHtml(item.school)}</h3>
+                          <p class="text-sm text-base-content/70">${escapeHtml(item.program)}</p>
+                        </div>
+                        <span class="text-sm text-base-content/60">${escapeHtml(
+                          item.startDate,
+                        )} - ${escapeHtml(item.endDate)}</span>
+                      </div>
+                    </div>
+                  `,
+                  )
+                  .join("")}
+              </div>`
+        }
       </section>
     </div>
   `;
@@ -184,29 +203,40 @@ const renderModern = (resume) => {
         </div>
         <div>
           <p class="section-label text-xs uppercase text-base-content/50">Skills</p>
-          <div class="mt-3 flex flex-wrap gap-2">
-            ${resume.skills
-              .map((skill) => `<span class="badge badge-outline">${escapeHtml(skill)}</span>`)
-              .join("")}
-          </div>
+          ${
+            resume.skills.length === 0
+              ? `<p class="mt-3 text-sm text-base-content/60">Add your strongest skills to stand out.</p>`
+              : `<div class="mt-3 flex flex-wrap gap-2">
+                  ${resume.skills
+                    .map(
+                      (skill) =>
+                        `<span class="badge badge-outline">${escapeHtml(skill)}</span>`,
+                    )
+                    .join("")}
+                </div>`
+          }
         </div>
         <div>
           <p class="section-label text-xs uppercase text-base-content/50">Education</p>
-          <div class="mt-3 space-y-2 text-sm">
-            ${resume.education
-              .map(
-                (item) => `
-                <div class="print-avoid-break">
-                  <p class="font-medium">${escapeHtml(item.school)}</p>
-                  <p class="text-base-content/70">${escapeHtml(item.program)}</p>
-                  <p class="text-xs text-base-content/60">${escapeHtml(
-                    item.startDate,
-                  )} - ${escapeHtml(item.endDate)}</p>
-                </div>
-              `,
-              )
-              .join("")}
-          </div>
+          ${
+            resume.education.length === 0
+              ? `<p class="mt-3 text-sm text-base-content/60">Add education details or certifications here.</p>`
+              : `<div class="mt-3 space-y-2 text-sm">
+                  ${resume.education
+                    .map(
+                      (item) => `
+                      <div class="print-avoid-break">
+                        <p class="font-medium">${escapeHtml(item.school)}</p>
+                        <p class="text-base-content/70">${escapeHtml(item.program)}</p>
+                        <p class="text-xs text-base-content/60">${escapeHtml(
+                          item.startDate,
+                        )} - ${escapeHtml(item.endDate)}</p>
+                      </div>
+                    `,
+                    )
+                    .join("")}
+                </div>`
+          }
         </div>
       </aside>
 
@@ -223,34 +253,42 @@ const renderModern = (resume) => {
             <h2 class="text-lg font-semibold">Featured Projects</h2>
             <span class="badge badge-outline">Portfolio</span>
           </div>
-          <div class="grid gap-4 md:grid-cols-2">
-            ${resume.projects
-              .map(
-                (project) => `
-                <div class="card bg-base-100 preview-card print-avoid-break">
-                  <div class="card-body gap-3">
-                    <h3 class="card-title text-lg">${escapeHtml(project.name)}</h3>
-                    <p class="text-sm text-base-content/70">${escapeHtml(
-                      project.description,
-                    )}</p>
-                    <div class="flex flex-wrap gap-2">
-                      ${project.stack
-                        .map(
-                          (tech) =>
-                            `<span class="badge badge-ghost">${escapeHtml(tech)}</span>`,
-                        )
-                        .join("")}
-                    </div>
-                    <div class="card-actions justify-between text-sm text-base-content/70">
-                      <span>${escapeHtml(project.repoUrl)}</span>
-                      <span>${escapeHtml(project.liveUrl)}</span>
-                    </div>
+          ${
+            resume.projects.length === 0
+              ? `<div class="card bg-base-100 preview-card">
+                  <div class="card-body">
+                    <p class="text-sm text-base-content/60">Add projects to showcase recent launches and experiments.</p>
                   </div>
-                </div>
-              `,
-              )
-              .join("")}
-          </div>
+                </div>`
+              : `<div class="grid gap-4 md:grid-cols-2">
+                  ${resume.projects
+                    .map(
+                      (project) => `
+                      <div class="card bg-base-100 preview-card print-avoid-break">
+                        <div class="card-body gap-3">
+                          <h3 class="card-title text-lg">${escapeHtml(project.name)}</h3>
+                          <p class="text-sm text-base-content/70">${escapeHtml(
+                            project.description,
+                          )}</p>
+                          <div class="flex flex-wrap gap-2">
+                            ${project.stack
+                              .map(
+                                (tech) =>
+                                  `<span class="badge badge-ghost">${escapeHtml(tech)}</span>`,
+                              )
+                              .join("")}
+                          </div>
+                          <div class="card-actions justify-between text-sm text-base-content/70">
+                            <span>${escapeHtml(project.repoUrl)}</span>
+                            <span>${escapeHtml(project.liveUrl)}</span>
+                          </div>
+                        </div>
+                      </div>
+                    `,
+                    )
+                    .join("")}
+                </div>`
+          }
         </div>
 
         <div class="card bg-base-100 preview-card">
@@ -259,30 +297,38 @@ const renderModern = (resume) => {
               <h2 class="text-lg font-semibold">Experience</h2>
               <span class="badge badge-outline">Resume</span>
             </div>
-            <div class="space-y-5">
-              ${resume.experience
-                .map(
-                  (role) => `
-                  <div class="space-y-2 print-avoid-break">
-                    <div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-                      <div>
-                        <h3 class="text-base font-semibold">${escapeHtml(role.role)}</h3>
-                        <p class="text-base-content/70">${escapeHtml(role.company)}</p>
-                      </div>
-                      <span class="text-sm text-base-content/60">${escapeHtml(
-                        role.startDate,
-                      )} - ${escapeHtml(role.endDate)}</span>
-                    </div>
-                    <ul class="list-disc space-y-1 pl-5 text-sm text-base-content/80">
-                      ${role.bullets
-                        .map((bullet) => `<li>${escapeHtml(bullet)}</li>`)
-                        .join("")}
-                    </ul>
-                  </div>
-                `,
-                )
-                .join("")}
-            </div>
+            ${
+              resume.experience.length === 0
+                ? `<p class="text-sm text-base-content/60">Add experience entries to share your recent roles.</p>`
+                : `<div class="space-y-5">
+                    ${resume.experience
+                      .map(
+                        (role) => `
+                        <div class="space-y-2 print-avoid-break">
+                          <div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+                            <div>
+                              <h3 class="text-base font-semibold">${escapeHtml(
+                                role.role,
+                              )}</h3>
+                              <p class="text-base-content/70">${escapeHtml(
+                                role.company,
+                              )}</p>
+                            </div>
+                            <span class="text-sm text-base-content/60">${escapeHtml(
+                              role.startDate,
+                            )} - ${escapeHtml(role.endDate)}</span>
+                          </div>
+                          <ul class="list-disc space-y-1 pl-5 text-sm text-base-content/80">
+                            ${role.bullets
+                              .map((bullet) => `<li>${escapeHtml(bullet)}</li>`)
+                              .join("")}
+                          </ul>
+                        </div>
+                      `,
+                      )
+                      .join("")}
+                  </div>`
+            }
           </div>
         </div>
       </section>

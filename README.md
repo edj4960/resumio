@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Open Resume Builder
 
-## Getting Started
+Build, preview, and export a resume/portfolio without a database. The app stores profiles locally in IndexedDB, supports multiple templates, and exports a static site bundle that works on any host.
 
-First, run the development server:
+## Screenshots
+
+![Editor](public/screenshots/editor.svg)
+![Preview](public/screenshots/preview.svg)
+
+## Features
+
+- Multi-profile resume editor (local IndexedDB persistence)
+- Classic and modern templates with live preview
+- DaisyUI theme picker with instant updates
+- Export JSON backups and a static viewer bundle (.zip)
+- Print-friendly PDF export
+
+## Quickstart
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 to start editing.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How data works
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Resume data is stored as `Resume` JSON (see `src/lib/schema/resume.ts`). Each profile is saved in IndexedDB under the `profiles` store and keyed by `profileId`.
 
-## Learn More
+The static viewer expects a `resume.json` file in the same folder as `index.html`. It reads `resume.ui.theme` and `resume.ui.template` to render the chosen template.
 
-To learn more about Next.js, take a look at the following resources:
+## Export the static site bundle
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Go to `/export` in the app.
+2. Click **Download bundle (.zip)**.
+3. Unzip the archive and upload the folder to a static host (Netlify Drop, Cloudflare Pages, GitHub Pages).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The bundle includes:
 
-## Deploy on Vercel
+- `index.html`
+- `assets/` (viewer JS/CSS)
+- `resume.json`
+- `README.txt` with hosting instructions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/app/*` App Router pages
+- `src/components/preview/*` Template renderer
+- `src/lib/schema/*` Zod schema + types
+- `src/lib/storage/*` IndexedDB persistence
+- `public/viewer-dist/*` Static viewer assets used for export
+
+## License
+
+MIT. See `LICENSE`.
