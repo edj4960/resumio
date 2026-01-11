@@ -10,7 +10,7 @@ Build, preview, and export a resume/portfolio without a database. The app stores
 ## Features
 
 - Multi-profile resume editor (local IndexedDB persistence)
-- Classic and modern templates with live preview
+- Separate portfolio and resume templates with live preview
 - DaisyUI theme picker with instant updates
 - Export JSON backups and a static viewer bundle (.zip)
 - Print-friendly PDF export
@@ -26,9 +26,9 @@ Open http://localhost:3000 to start editing.
 
 ## How data works
 
-Resume data is stored as `Resume` JSON (see `src/lib/schema/resume.ts`). Each profile is saved in IndexedDB under the `profiles` store and keyed by `profileId`.
+Resume data is stored as `Resume` JSON (see `src/lib/schema/resume.ts`). Each profile is saved in IndexedDB under the `profiles` store and keyed by `profileId`. Templates and themes are stored separately for portfolio and resume outputs under `ui.portfolio` and `ui.resume`.
 
-The static viewer expects a `resume.json` file in the same folder as `index.html`. It reads `resume.ui.theme` and `resume.ui.template` to render the chosen template.
+The static viewer expects a `resume.json` file in the same folder as `index.html`. It reads `resume.ui.portfolio` for the portfolio view and `resume.ui.resume` for the resume view.
 
 ## Export the static site bundle
 
@@ -38,7 +38,8 @@ The static viewer expects a `resume.json` file in the same folder as `index.html
 
 The bundle includes:
 
-- `index.html`
+- `index.html` (portfolio)
+- `resume/index.html` (resume)
 - `assets/` (viewer JS/CSS)
 - `resume.json`
 - `README.txt` with hosting instructions

@@ -1,6 +1,48 @@
 import { z } from "zod";
 
-export const resumeSchema = z.object({
+const portfolioTemplateSchema = z.enum([
+  "sidebar",
+  "landing",
+  "grid",
+  "modern",
+  "classic",
+]);
+
+const resumeTemplateSchema = z.enum(["classic", "compact", "ats"]);
+
+const portfolioOptionsSchema = z
+  .object({
+    showPhoto: z.boolean().optional(),
+    layout: z.enum(["leftNav", "topNav", "none"]).optional(),
+    accent: z.string().optional(),
+  })
+  .optional();
+
+const resumeOptionsSchema = z
+  .object({
+    density: z.enum(["comfortable", "compact"]).optional(),
+    showIcons: z.boolean().optional(),
+  })
+  .optional();
+
+const portfolioUiSchema = z.object({
+  theme: z.string().min(1),
+  template: portfolioTemplateSchema,
+  options: portfolioOptionsSchema,
+});
+
+const resumeUiSchema = z.object({
+  theme: z.string().min(1),
+  template: resumeTemplateSchema,
+  options: resumeOptionsSchema,
+});
+
+const uiSchema = z.object({
+  portfolio: portfolioUiSchema,
+  resume: resumeUiSchema,
+});
+
+const baseResumeSchema = z.object({
   basics: z.object({
     name: z.string().min(1),
     title: z.string().min(1),
@@ -40,12 +82,10 @@ export const resumeSchema = z.object({
       endDate: z.string().min(1),
     }),
   ),
-  ui: z.object({
-    theme: z.string().min(1),
-    template: z.enum(["classic", "modern"]),
-  }),
+  ui: uiSchema,
 });
 
+export const resumeSchema = baseResumeSchema;
 export type Resume = z.infer<typeof resumeSchema>;
 
 export const defaultResume: Resume = resumeSchema.parse({
@@ -118,7 +158,72 @@ export const defaultResume: Resume = resumeSchema.parse({
     },
   ],
   ui: {
-    theme: "corporate",
-    template: "modern",
+    portfolio: {
+      theme: "night",
+      template: "sidebar",
+      options: {
+        layout: "leftNav",
+        accent: "sky",
+        showPhoto: false,
+      },
+    },
+    resume: {
+      theme: "light",
+      template: "classic",
+      options: {
+        density: "comfortable",
+        showIcons: false,
+      },
+    },
   },
 });
+
+const legacyUiSchema = z.object({
+  theme: z.string().optional(),
+  template: z.string().optional(),
+});
+
+export function migrateResumeData(raw: unknown): Resume {
+  const parsed = resumeSchema.safeParse(raw);
+  if (parsed.success) {
+    return parsed.data;
+  }
+
+  const base = typeof raw === "object" && raw !== null ? (raw as Record<string, unknown>) : {};
+  const legacyUi = legacyUiSchema.safeParse(base.ui).success
+    ? (base.ui as { theme?: string; template?: string })
+    : undefined;
+
+  const portfolioTemplates = [
+    "sidebar",
+    "landing",
+    "grid",
+    "modern",
+    "classic",
+  ] as const;
+
+  const legacyTemplate = portfolioTemplates.includes(
+    legacyUi?.template as (typeof portfolioTemplates)[number],
+  )
+    ? (legacyUi?.template as Resume["ui"]["portfolio"]["template"])
+    : defaultResume.ui.portfolio.template;
+
+  const fallback: Resume = {
+    ...defaultResume,
+    ...base,
+    ui: {
+      portfolio: {
+        theme: legacyUi?.theme ?? defaultResume.ui.portfolio.theme,
+        template: legacyTemplate,
+        options: defaultResume.ui.portfolio.options,
+      },
+      resume: {
+        theme: defaultResume.ui.resume.theme,
+        template: defaultResume.ui.resume.template,
+        options: defaultResume.ui.resume.options,
+      },
+    },
+  };
+
+  return resumeSchema.parse(fallback);
+}

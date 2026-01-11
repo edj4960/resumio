@@ -1,5 +1,5 @@
 import { getDb, dbConfig } from "@/lib/storage/db";
-import { defaultResume, resumeSchema } from "@/lib/schema/resume";
+import { defaultResume, migrateResumeData, resumeSchema } from "@/lib/schema/resume";
 import type { Resume } from "@/lib/schema/resume";
 
 export type StoredProfile = {
@@ -30,7 +30,8 @@ export async function getProfile(profileId: string) {
     };
   }
 
-  const parsed = resumeSchema.safeParse(record.resume);
+  const migrated = migrateResumeData(record.resume);
+  const parsed = resumeSchema.safeParse(migrated);
   if (!parsed.success) {
     return {
       profile: {

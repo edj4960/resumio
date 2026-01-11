@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import SectionCard from "@/components/SectionCard";
 import { useProfile } from "@/components/ProfileProvider";
-import { resumeSchema } from "@/lib/schema/resume";
+import { migrateResumeData, resumeSchema } from "@/lib/schema/resume";
 import { buildExportZip } from "@/lib/export";
 
 export default function ExportPage() {
@@ -35,7 +35,8 @@ export default function ExportPage() {
     try {
       const text = await file.text();
       const json = JSON.parse(text);
-      const parsed = resumeSchema.safeParse(json);
+      const migrated = migrateResumeData(json);
+      const parsed = resumeSchema.safeParse(migrated);
       if (!parsed.success) {
         setError("Invalid resume.json. Please upload a valid schema.");
         return;

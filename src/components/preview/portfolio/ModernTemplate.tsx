@@ -1,6 +1,10 @@
 import type { Resume } from "@/lib/schema/resume";
 
-export default function ModernTemplate({ resume }: { resume: Resume }) {
+type ModernTemplateProps = {
+  resume: Resume;
+};
+
+export default function ModernTemplate({ resume }: ModernTemplateProps) {
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
       <aside className="preview-card space-y-6 rounded-2xl bg-base-100 p-6 shadow">

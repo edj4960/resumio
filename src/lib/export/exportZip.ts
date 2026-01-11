@@ -4,7 +4,7 @@ import { viewerManifest } from "@/lib/export/viewerManifest";
 
 const viewerBasePath = "/viewer-dist";
 
-const readmeText = `Resume Builder Export\n\nSteps\n1. Unzip this archive.\n2. Upload the folder contents to a static host (Netlify Drop, Cloudflare Pages, GitHub Pages).\n3. Ensure index.html and resume.json stay in the same folder.\n\nNotes\n- Theme and template are read from resume.json.\n- No build step is required.`;
+const readmeText = `Resume Builder Export\n\nSteps\n1. Unzip this archive.\n2. Upload the folder contents to a static host (Netlify Drop, Cloudflare Pages, GitHub Pages).\n3. Ensure index.html, resume/, assets/, and resume.json stay in the same folder.\n\nRoutes\n- Portfolio: /index.html\n- Resume: /resume/index.html\n\nNotes\n- Theme and template are read from resume.json.\n- Use the Resume page to print or save as PDF.\n- No build step is required.`;
 
 export async function buildExportZip(resume: Resume) {
   const zip = new JSZip();

@@ -1,10 +1,15 @@
 import type { Resume } from "@/lib/schema/resume";
-import PreviewRenderer from "@/components/preview/PreviewRenderer";
+import PortfolioRenderer from "@/components/preview/PortfolioRenderer";
+import ResumeRenderer from "@/components/preview/ResumeRenderer";
 
 type ResumePreviewProps = {
   resume: Resume;
+  target: "portfolio" | "resume";
 };
 
-export default function ResumePreview({ resume }: ResumePreviewProps) {
-  return <PreviewRenderer resume={resume} />;
+export default function ResumePreview({ resume, target }: ResumePreviewProps) {
+  if (target === "resume") {
+    return <ResumeRenderer resume={resume} />;
+  }
+  return <PortfolioRenderer resume={resume} />;
 }

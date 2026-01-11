@@ -84,6 +84,7 @@ export default function EditPage() {
   } = useProfile();
   const [localResume, dispatch] = useReducer(resumeReducer, resume);
   const [resetting, setResetting] = useState(false);
+  const [target, setTarget] = useState<"portfolio" | "resume">("portfolio");
   const initialLoad = useRef(true);
   const lastProfileId = useRef(profileId);
 
@@ -112,6 +113,11 @@ export default function EditPage() {
   }, [lastSavedAt]);
 
   const validation = useMemo(() => validateResume(localResume), [localResume]);
+  const activeTheme = useMemo(() => {
+    return target === "resume"
+      ? localResume.ui.resume.theme
+      : localResume.ui.portfolio.theme;
+  }, [localResume.ui, target]);
 
   useEffect(() => {
     if (!isReady) {
@@ -275,56 +281,251 @@ export default function EditPage() {
             />
           </SectionCard>
 
-          <SectionCard title="Theme" description="Template and visual style.">
-            <div className="grid gap-4 md:grid-cols-2">
-              <label className="form-control">
-                <span className="label-text">Template</span>
-                <select
-                  className="select select-bordered"
-                  value={localResume.ui.template}
-                  onChange={(event) =>
-                    updateSection((resumeState) => ({
-                      ...resumeState,
-                      ui: {
-                        ...resumeState.ui,
-                        template: event.target.value as "classic" | "modern",
-                      },
-                    }))
-                  }
-                >
-                  <option value="classic">Classic</option>
-                  <option value="modern">Modern</option>
-                </select>
-              </label>
-              <label className="form-control">
-                <span className="label-text">Theme</span>
-                <select
-                  className="select select-bordered"
-                  value={localResume.ui.theme}
-                  onChange={(event) =>
-                    updateSection((resumeState) => ({
-                      ...resumeState,
-                      ui: { ...resumeState.ui, theme: event.target.value },
-                    }))
-                  }
-                >
-                  {daisyThemes.map((theme) => (
-                    <option key={theme} value={theme}>
-                      {theme}
-                    </option>
-                  ))}
-                </select>
-              </label>
+          <SectionCard title="Design" description="Portfolio and resume styling.">
+            <div className="flex flex-wrap gap-2">
+              <button
+                className={`btn ${target === "portfolio" ? "btn-primary" : "btn-outline"}`}
+                type="button"
+                onClick={() => setTarget("portfolio")}
+              >
+                Portfolio
+              </button>
+              <button
+                className={`btn ${target === "resume" ? "btn-primary" : "btn-outline"}`}
+                type="button"
+                onClick={() => setTarget("resume")}
+              >
+                Resume
+              </button>
             </div>
+            {target === "portfolio" ? (
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
+                <label className="form-control">
+                  <span className="label-text">Portfolio template</span>
+                  <select
+                    className="select select-bordered"
+                    value={localResume.ui.portfolio.template}
+                    onChange={(event) =>
+                      updateSection((resumeState) => ({
+                        ...resumeState,
+                        ui: {
+                          ...resumeState.ui,
+                          portfolio: {
+                            ...resumeState.ui.portfolio,
+                            template: event.target.value as
+                              | "sidebar"
+                              | "landing"
+                              | "grid"
+                              | "modern"
+                              | "classic",
+                          },
+                        },
+                      }))
+                    }
+                  >
+                    <option value="sidebar">Sidebar</option>
+                    <option value="modern">Modern</option>
+                    <option value="landing">Landing</option>
+                    <option value="grid">Grid</option>
+                    <option value="classic">Classic</option>
+                  </select>
+                </label>
+                <label className="form-control">
+                  <span className="label-text">Portfolio theme</span>
+                  <select
+                    className="select select-bordered"
+                    value={localResume.ui.portfolio.theme}
+                    onChange={(event) =>
+                      updateSection((resumeState) => ({
+                        ...resumeState,
+                        ui: {
+                          ...resumeState.ui,
+                          portfolio: {
+                            ...resumeState.ui.portfolio,
+                            theme: event.target.value,
+                          },
+                        },
+                      }))
+                    }
+                  >
+                    {daisyThemes.map((theme) => (
+                      <option key={theme} value={theme}>
+                        {theme}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="form-control">
+                  <span className="label-text">Layout</span>
+                  <select
+                    className="select select-bordered"
+                    value={localResume.ui.portfolio.options?.layout ?? "leftNav"}
+                    onChange={(event) =>
+                      updateSection((resumeState) => ({
+                        ...resumeState,
+                        ui: {
+                          ...resumeState.ui,
+                          portfolio: {
+                            ...resumeState.ui.portfolio,
+                            options: {
+                              ...resumeState.ui.portfolio.options,
+                              layout: event.target.value as
+                                | "leftNav"
+                                | "topNav"
+                                | "none",
+                            },
+                          },
+                        },
+                      }))
+                    }
+                  >
+                    <option value="leftNav">Left nav</option>
+                    <option value="topNav">Top nav</option>
+                    <option value="none">None</option>
+                  </select>
+                </label>
+                <label className="form-control">
+                  <span className="label-text">Show photo</span>
+                  <input
+                    type="checkbox"
+                    className="toggle"
+                    checked={Boolean(localResume.ui.portfolio.options?.showPhoto)}
+                    onChange={(event) =>
+                      updateSection((resumeState) => ({
+                        ...resumeState,
+                        ui: {
+                          ...resumeState.ui,
+                          portfolio: {
+                            ...resumeState.ui.portfolio,
+                            options: {
+                              ...resumeState.ui.portfolio.options,
+                              showPhoto: event.target.checked,
+                            },
+                          },
+                        },
+                      }))
+                    }
+                  />
+                </label>
+              </div>
+            ) : (
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
+                <label className="form-control">
+                  <span className="label-text">Resume template</span>
+                  <select
+                    className="select select-bordered"
+                    value={localResume.ui.resume.template}
+                    onChange={(event) =>
+                      updateSection((resumeState) => ({
+                        ...resumeState,
+                        ui: {
+                          ...resumeState.ui,
+                          resume: {
+                            ...resumeState.ui.resume,
+                            template: event.target.value as
+                              | "classic"
+                              | "compact"
+                              | "ats",
+                          },
+                        },
+                      }))
+                    }
+                  >
+                    <option value="classic">Classic</option>
+                    <option value="compact">Compact</option>
+                    <option value="ats">ATS</option>
+                  </select>
+                </label>
+                <label className="form-control">
+                  <span className="label-text">Resume theme</span>
+                  <select
+                    className="select select-bordered"
+                    value={localResume.ui.resume.theme}
+                    onChange={(event) =>
+                      updateSection((resumeState) => ({
+                        ...resumeState,
+                        ui: {
+                          ...resumeState.ui,
+                          resume: {
+                            ...resumeState.ui.resume,
+                            theme: event.target.value,
+                          },
+                        },
+                      }))
+                    }
+                  >
+                    {daisyThemes.map((theme) => (
+                      <option key={theme} value={theme}>
+                        {theme}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="form-control">
+                  <span className="label-text">Density</span>
+                  <select
+                    className="select select-bordered"
+                    value={localResume.ui.resume.options?.density ?? "comfortable"}
+                    onChange={(event) =>
+                      updateSection((resumeState) => ({
+                        ...resumeState,
+                        ui: {
+                          ...resumeState.ui,
+                          resume: {
+                            ...resumeState.ui.resume,
+                            options: {
+                              ...resumeState.ui.resume.options,
+                              density: event.target.value as
+                                | "comfortable"
+                                | "compact",
+                            },
+                          },
+                        },
+                      }))
+                    }
+                  >
+                    <option value="comfortable">Comfortable</option>
+                    <option value="compact">Compact</option>
+                  </select>
+                </label>
+                <label className="form-control">
+                  <span className="label-text">Show icons</span>
+                  <input
+                    type="checkbox"
+                    className="toggle"
+                    checked={Boolean(localResume.ui.resume.options?.showIcons)}
+                    onChange={(event) =>
+                      updateSection((resumeState) => ({
+                        ...resumeState,
+                        ui: {
+                          ...resumeState.ui,
+                          resume: {
+                            ...resumeState.ui.resume,
+                            options: {
+                              ...resumeState.ui.resume.options,
+                              showIcons: event.target.checked,
+                            },
+                          },
+                        },
+                      }))
+                    }
+                  />
+                </label>
+              </div>
+            )}
           </SectionCard>
         </div>
 
         <div className="space-y-4 lg:sticky lg:top-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold">Live preview</h2>
-            <span className="badge badge-outline">Embedded</span>
+            <span className="badge badge-outline">
+              {target === "resume" ? "Resume" : "Portfolio"}
+            </span>
           </div>
-          <ResumePreview resume={localResume} />
+          <div data-theme={activeTheme} className="rounded-3xl bg-base-200 p-4">
+            <ResumePreview resume={localResume} target={target} />
+          </div>
         </div>
       </div>
     </div>
