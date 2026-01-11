@@ -31,7 +31,7 @@ export default function PreviewPage() {
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 print-hidden">
           <h1 className="text-3xl font-semibold">Live Preview</h1>
           <p className="text-base-content/70">
             A quick look at how your resume and portfolio will render for{" "}
@@ -132,7 +132,10 @@ export default function PreviewPage() {
         </div>
       </div>
 
-      <div data-theme={activeTheme} className="rounded-3xl bg-base-200 p-4">
+      <div
+        data-theme={activeTheme}
+        className="print-preview-shell rounded-3xl bg-base-200 p-4"
+      >
         <ResumePreview resume={resume} target={target} />
       </div>
     </div>

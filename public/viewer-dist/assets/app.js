@@ -80,7 +80,7 @@ const setTheme = (theme) => {
 const renderResumeClassic = (resume, density = "comfortable") => {
   const tight = density === "compact";
   return `
-    <div class="preview-card rounded-xl border border-base-300 bg-base-100 p-8">
+    <div class="resume-root preview-card rounded-xl border border-base-300 bg-base-100 p-8">
       <header class="space-y-2 border-b border-base-200 pb-4">
         <h1 class="text-3xl font-semibold">${escapeHtml(resume.basics.name)}</h1>
         <p class="text-base-content/70">${escapeHtml(resume.basics.title)}</p>
@@ -207,7 +207,7 @@ const renderResumeClassic = (resume, density = "comfortable") => {
 
 const renderResumeATS = (resume) => {
   return `
-    <div class="preview-card rounded-md border border-base-300 bg-base-100 p-6">
+    <div class="resume-root preview-card rounded-md border border-base-300 bg-base-100 p-6">
       <header class="space-y-1 border-b border-base-200 pb-3">
         <h1 class="text-2xl font-semibold">${escapeHtml(resume.basics.name)}</h1>
         <p class="text-sm text-base-content/70">${escapeHtml(resume.basics.title)}</p>

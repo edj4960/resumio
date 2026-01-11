@@ -6,7 +6,7 @@ type ATSTemplateProps = {
 
 export default function ATSTemplate({ resume }: ATSTemplateProps) {
   return (
-    <div className="preview-card rounded-md border border-base-300 bg-base-100 p-6 shadow-sm">
+    <div className="resume-root preview-card rounded-md border border-base-300 bg-base-100 p-6 shadow-sm">
       <header className="space-y-1 border-b border-base-200 pb-3">
         <h1 className="text-2xl font-semibold">{resume.basics.name}</h1>
         <p className="text-sm text-base-content/70">{resume.basics.title}</p>

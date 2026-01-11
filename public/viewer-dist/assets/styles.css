@@ -12,7 +12,7 @@ body {
 
 @page {
   size: auto;
-  margin: 12mm;
+  margin: 10mm;
 }
 
 @media print {
@@ -28,6 +28,37 @@ body {
   .preview-card,
   .card {
     box-shadow: none !important;
+    border-color: transparent !important;
+  }
+
+  .print-preview-shell {
+    padding: 0 !important;
+    background: transparent !important;
+  }
+
+  .bg-base-200,
+  .min-h-screen {
+    background: #ffffff !important;
+    min-height: auto !important;
+  }
+
+  .rounded-3xl,
+  .rounded-xl,
+  .rounded-md {
+    border-radius: 0 !important;
+  }
+
+  .resume-root {
+    margin: 0 !important;
+    padding: 16px !important;
+  }
+
+  .resume-root section {
+    margin-top: 0px !important;
+  }
+
+  .resume-root header {
+    padding-bottom: 8px !important;
   }
 
   .print-avoid-break {

@@ -523,7 +523,10 @@ export default function EditPage() {
               {target === "resume" ? "Resume" : "Portfolio"}
             </span>
           </div>
-          <div data-theme={activeTheme} className="rounded-3xl bg-base-200 p-4">
+          <div
+            data-theme={activeTheme}
+            className="print-preview-shell rounded-3xl bg-base-200 p-4"
+          >
             <ResumePreview resume={localResume} target={target} />
           </div>
         </div>

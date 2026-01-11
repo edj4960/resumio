@@ -11,7 +11,7 @@ export default function ClassicTemplate({ resume, density = "comfortable" }: Cla
   const tight = density === "compact";
 
   return (
-    <div className="preview-card rounded-xl border border-base-300 bg-base-100 p-8 shadow-sm">
+    <div className="resume-root preview-card rounded-xl border border-base-300 bg-base-100 p-8 shadow-sm">
       <header className="space-y-2 border-b border-base-200 pb-4">
         <h1 className="text-3xl font-semibold">{resume.basics.name}</h1>
         <p className="text-base-content/70">{resume.basics.title}</p>
