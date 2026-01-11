@@ -1,5 +1,5 @@
 export const viewerManifest = [
   "index.html",
-  "styles.css",
-  "app.js",
+  "assets/styles.css",
+  "assets/app.js",
 ];

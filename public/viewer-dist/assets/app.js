@@ -14,6 +14,40 @@ const escapeHtml = (value) =>
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
 
+const isNonEmptyString = (value) =>
+  typeof value === "string" && value.trim().length > 0;
+
+const validateResume = (resume) => {
+  if (!resume || typeof resume !== "object") {
+    return "resume.json is not a valid object.";
+  }
+  if (!resume.basics || typeof resume.basics !== "object") {
+    return "Missing basics section.";
+  }
+  if (!isNonEmptyString(resume.basics.name)) {
+    return "Name is required.";
+  }
+  if (!isNonEmptyString(resume.basics.title)) {
+    return "Title is required.";
+  }
+  if (!resume.links || typeof resume.links !== "object") {
+    return "Missing links section.";
+  }
+  if (!Array.isArray(resume.skills)) {
+    return "Skills must be an array.";
+  }
+  if (!Array.isArray(resume.experience)) {
+    return "Experience must be an array.";
+  }
+  if (!Array.isArray(resume.projects)) {
+    return "Projects must be an array.";
+  }
+  if (!Array.isArray(resume.education)) {
+    return "Education must be an array.";
+  }
+  return null;
+};
+
 const renderClassic = (resume) => {
   return `
     <div class="rounded-xl border border-base-300 bg-base-100 p-8 preview-card">
@@ -267,6 +301,15 @@ const loadResume = async () => {
       throw new Error("resume.json not found");
     }
     const resume = await response.json();
+    const errorMessage = validateResume(resume);
+    if (errorMessage) {
+      app.innerHTML = `
+        <div class="alert alert-error">
+          <span>${escapeHtml(errorMessage)}</span>
+        </div>
+      `;
+      return;
+    }
     setTheme(resume.ui?.theme || "corporate");
     render(resume);
   } catch (error) {
