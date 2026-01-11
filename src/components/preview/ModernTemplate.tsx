@@ -51,7 +51,7 @@ export default function ModernTemplate({ resume }: { resume: Resume }) {
                 <p className="font-medium">{item.school}</p>
                 <p className="text-base-content/70">{item.program}</p>
                 <p className="text-xs text-base-content/60">
-                  {item.startDate} — {item.endDate}
+                  {item.startDate} - {item.endDate}
                 </p>
               </div>
             ))}
@@ -114,7 +114,7 @@ export default function ModernTemplate({ resume }: { resume: Resume }) {
                       <p className="text-base-content/70">{role.company}</p>
                     </div>
                     <span className="text-sm text-base-content/60">
-                      {role.startDate} — {role.endDate}
+                      {role.startDate} - {role.endDate}
                     </span>
                   </div>
                   <ul className="list-disc space-y-1 pl-5 text-sm text-base-content/80">

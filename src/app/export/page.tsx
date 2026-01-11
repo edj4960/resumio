@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import SectionCard from "@/components/SectionCard";
 import { useProfile } from "@/components/ProfileProvider";
 import { resumeSchema } from "@/lib/schema/resume";
+import { buildExportZip } from "@/lib/export";
 
 export default function ExportPage() {
   const { resume, profileId, saveActiveProfile, updateResume } = useProfile();
   const router = useRouter();
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const downloadJson = () => {
     const payload = JSON.stringify(resume, null, 2);
@@ -49,6 +51,24 @@ export default function ExportPage() {
     }
   };
 
+  const downloadBundle = async () => {
+    setExporting(true);
+    setError("");
+    try {
+      const blob = await buildExportZip(resume);
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `${profileId}-site.zip`;
+      anchor.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError("Failed to build the export bundle. Please try again.");
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-2">
@@ -60,11 +80,15 @@ export default function ExportPage() {
 
       <SectionCard
         title="Export options"
-        description="Export features are stubbed, but the UI is ready."
+        description="Download a static portfolio bundle or backup your resume data."
       >
         <div className="flex flex-col gap-4 sm:flex-row">
-          <button className="btn btn-primary" type="button">
-            Download bundle (.zip)
+          <button
+            className="btn btn-primary"
+            type="button"
+            onClick={downloadBundle}
+          >
+            {exporting ? "Building..." : "Download bundle (.zip)"}
           </button>
           <button className="btn btn-outline" type="button" onClick={downloadJson}>
             Download resume.json
