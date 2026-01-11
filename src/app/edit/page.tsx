@@ -1,12 +1,75 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import SectionCard from "@/components/SectionCard";
+import ResumePreview from "@/components/ResumePreview";
 import { useProfile } from "@/components/ProfileProvider";
+import BasicsEditor, { type BasicsErrors } from "@/components/editor/BasicsEditor";
+import LinksEditor, { type LinksErrors } from "@/components/editor/LinksEditor";
+import SkillsEditor from "@/components/editor/SkillsEditor";
+import ExperienceEditor from "@/components/editor/ExperienceEditor";
+import ProjectsEditor from "@/components/editor/ProjectsEditor";
+import EducationEditor from "@/components/editor/EducationEditor";
+import { defaultResume, type Resume } from "@/lib/schema/resume";
+
+type ResumeAction =
+  | { type: "set"; payload: Resume }
+  | { type: "update"; updater: (resume: Resume) => Resume };
+
+const resumeReducer = (state: Resume, action: ResumeAction) => {
+  switch (action.type) {
+    case "set":
+      return action.payload;
+    case "update":
+      return action.updater(state);
+    default:
+      return state;
+  }
+};
+
+type ValidationErrors = {
+  basics: BasicsErrors;
+  links: LinksErrors;
+};
+
+const isValidUrl = (value: string) => {
+  if (!value.trim()) {
+    return true;
+  }
+  try {
+    new URL(value);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const validateResume = (resume: Resume): ValidationErrors => {
+  const basics: BasicsErrors = {};
+  const links: LinksErrors = {};
+
+  if (!resume.basics.name.trim()) {
+    basics.name = "Name is required.";
+  }
+  if (!resume.basics.title.trim()) {
+    basics.title = "Title is required.";
+  }
+
+  if (!isValidUrl(resume.links.github)) {
+    links.github = "Enter a valid URL.";
+  }
+  if (!isValidUrl(resume.links.linkedin)) {
+    links.linkedin = "Enter a valid URL.";
+  }
+  if (!isValidUrl(resume.links.website)) {
+    links.website = "Enter a valid URL.";
+  }
+
+  return { basics, links };
+};
 
 export default function EditPage() {
   const {
-    resume,
     updateResume,
     saveActiveProfile,
     saving,
@@ -16,9 +79,29 @@ export default function EditPage() {
     profileId,
     isValid,
     isReady,
+    resume
   } = useProfile();
+  const [localResume, dispatch] = useReducer(resumeReducer, resume);
   const [resetting, setResetting] = useState(false);
   const initialLoad = useRef(true);
+  const lastProfileId = useRef(profileId);
+
+  useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+    if (lastProfileId.current !== profileId) {
+      lastProfileId.current = profileId;
+      dispatch({ type: "set", payload: resume });
+    }
+  }, [isReady, profileId, resume]);
+
+  useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+    updateResume(localResume);
+  }, [isReady, localResume, updateResume]);
 
   const lastSavedLabel = useMemo(() => {
     if (!lastSavedAt) {
@@ -26,6 +109,8 @@ export default function EditPage() {
     }
     return new Date(lastSavedAt).toLocaleTimeString();
   }, [lastSavedAt]);
+
+  const validation = useMemo(() => validateResume(localResume), [localResume]);
 
   useEffect(() => {
     if (!isReady) {
@@ -36,13 +121,13 @@ export default function EditPage() {
       return;
     }
     const handle = window.setTimeout(() => {
-      void saveActiveProfile();
+      void saveActiveProfile(localResume);
     }, 500);
     return () => window.clearTimeout(handle);
-  }, [isReady, resume, saveActiveProfile]);
+  }, [isReady, localResume, saveActiveProfile]);
 
-  const handleChange = <K extends keyof typeof resume>(key: K, value: typeof resume[K]) => {
-    updateResume({ ...resume, [key]: value });
+  const updateSection = (updater: (resume: Resume) => Resume) => {
+    dispatch({ type: "update", updater });
   };
 
   return (
@@ -50,8 +135,8 @@ export default function EditPage() {
       <div className="flex flex-col gap-3">
         <h1 className="text-3xl font-semibold">Edit Resume</h1>
         <p className="text-base-content/70">
-          Update the fields below. Changes will eventually sync with the live
-          preview and export tools.
+          Update the fields below. Changes sync with the embedded preview and
+          autosave to IndexedDB.
         </p>
       </div>
 
@@ -79,6 +164,7 @@ export default function EditPage() {
               onClick={async () => {
                 setResetting(true);
                 await resetProfile();
+                dispatch({ type: "set", payload: defaultResume });
                 setResetting(false);
               }}
             >
@@ -112,384 +198,128 @@ export default function EditPage() {
         </span>
       </div>
 
-      <form className="space-y-8">
-        <SectionCard title="Basics" description="Core identity and summary.">
-          <div className="grid gap-4 md:grid-cols-2">
-            <label className="form-control">
-              <span className="label-text">Name</span>
-              <input
-                className="input input-bordered"
-                value={resume.basics.name}
-                onChange={(event) =>
-                  handleChange("basics", {
-                    ...resume.basics,
-                    name: event.target.value,
-                  })
-                }
-              />
-            </label>
-            <label className="form-control">
-              <span className="label-text">Title</span>
-              <input
-                className="input input-bordered"
-                value={resume.basics.title}
-                onChange={(event) =>
-                  handleChange("basics", {
-                    ...resume.basics,
-                    title: event.target.value,
-                  })
-                }
-              />
-            </label>
-            <label className="form-control">
-              <span className="label-text">Email</span>
-              <input
-                className="input input-bordered"
-                value={resume.basics.email}
-                onChange={(event) =>
-                  handleChange("basics", {
-                    ...resume.basics,
-                    email: event.target.value,
-                  })
-                }
-              />
-            </label>
-            <label className="form-control">
-              <span className="label-text">Location</span>
-              <input
-                className="input input-bordered"
-                value={resume.basics.location}
-                onChange={(event) =>
-                  handleChange("basics", {
-                    ...resume.basics,
-                    location: event.target.value,
-                  })
-                }
-              />
-            </label>
-          </div>
-          <label className="form-control">
-            <span className="label-text">Summary</span>
-            <textarea
-              className="textarea textarea-bordered min-h-32"
-              value={resume.basics.summary}
-              onChange={(event) =>
-                handleChange("basics", {
-                  ...resume.basics,
-                  summary: event.target.value,
-                })
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+        <div className="space-y-8">
+          <SectionCard title="Basics" description="Core identity and summary.">
+            <BasicsEditor
+              basics={localResume.basics}
+              errors={validation.basics}
+              onChange={(next) =>
+                updateSection((resumeState) => ({
+                  ...resumeState,
+                  basics: next,
+                }))
               }
             />
-          </label>
-        </SectionCard>
+          </SectionCard>
 
-        <SectionCard title="Links" description="Public profiles and website.">
-          <div className="grid gap-4 md:grid-cols-3">
-            <label className="form-control">
-              <span className="label-text">GitHub</span>
-              <input
-                className="input input-bordered"
-                value={resume.links.github}
-                onChange={(event) =>
-                  handleChange("links", {
-                    ...resume.links,
-                    github: event.target.value,
-                  })
-                }
-              />
-            </label>
-            <label className="form-control">
-              <span className="label-text">LinkedIn</span>
-              <input
-                className="input input-bordered"
-                value={resume.links.linkedin}
-                onChange={(event) =>
-                  handleChange("links", {
-                    ...resume.links,
-                    linkedin: event.target.value,
-                  })
-                }
-              />
-            </label>
-            <label className="form-control">
-              <span className="label-text">Website</span>
-              <input
-                className="input input-bordered"
-                value={resume.links.website}
-                onChange={(event) =>
-                  handleChange("links", {
-                    ...resume.links,
-                    website: event.target.value,
-                  })
-                }
-              />
-            </label>
+          <SectionCard title="Links" description="Public profiles and website.">
+            <LinksEditor
+              links={localResume.links}
+              errors={validation.links}
+              onChange={(next) =>
+                updateSection((resumeState) => ({
+                  ...resumeState,
+                  links: next,
+                }))
+              }
+            />
+          </SectionCard>
+
+          <SectionCard title="Skills" description="Skills you want to highlight.">
+            <SkillsEditor
+              skills={localResume.skills}
+              onChange={(next) =>
+                updateSection((resumeState) => ({
+                  ...resumeState,
+                  skills: next,
+                }))
+              }
+            />
+          </SectionCard>
+
+          <SectionCard title="Experience" description="Roles and impact.">
+            <ExperienceEditor
+              experience={localResume.experience}
+              onChange={(next) =>
+                updateSection((resumeState) => ({
+                  ...resumeState,
+                  experience: next,
+                }))
+              }
+            />
+          </SectionCard>
+
+          <SectionCard title="Projects" description="Case studies and launches.">
+            <ProjectsEditor
+              projects={localResume.projects}
+              onChange={(next) =>
+                updateSection((resumeState) => ({
+                  ...resumeState,
+                  projects: next,
+                }))
+              }
+            />
+          </SectionCard>
+
+          <SectionCard title="Education" description="Programs and degrees.">
+            <EducationEditor
+              education={localResume.education}
+              onChange={(next) =>
+                updateSection((resumeState) => ({
+                  ...resumeState,
+                  education: next,
+                }))
+              }
+            />
+          </SectionCard>
+
+          <SectionCard title="Theme" description="Template and visual style.">
+            <div className="grid gap-4 md:grid-cols-2">
+              <label className="form-control">
+                <span className="label-text">Template</span>
+                <select
+                  className="select select-bordered"
+                  value={localResume.ui.template}
+                  onChange={(event) =>
+                    updateSection((resumeState) => ({
+                      ...resumeState,
+                      ui: {
+                        ...resumeState.ui,
+                        template: event.target.value as "classic" | "modern",
+                      },
+                    }))
+                  }
+                >
+                  <option value="classic">Classic</option>
+                  <option value="modern">Modern</option>
+                </select>
+              </label>
+              <label className="form-control">
+                <span className="label-text">Theme</span>
+                <input
+                  className="input input-bordered"
+                  value={localResume.ui.theme}
+                  onChange={(event) =>
+                    updateSection((resumeState) => ({
+                      ...resumeState,
+                      ui: { ...resumeState.ui, theme: event.target.value },
+                    }))
+                  }
+                />
+              </label>
+            </div>
+          </SectionCard>
+        </div>
+
+        <div className="space-y-4 lg:sticky lg:top-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Live preview</h2>
+            <span className="badge badge-outline">Embedded</span>
           </div>
-        </SectionCard>
-
-        <SectionCard title="Skills" description="Comma-separated list.">
-          <textarea
-            className="textarea textarea-bordered min-h-28"
-            value={resume.skills.join(", ")}
-            onChange={(event) =>
-              handleChange(
-                "skills",
-                event.target.value
-                  .split(",")
-                  .map((item) => item.trim())
-                  .filter(Boolean),
-              )
-            }
-          />
-        </SectionCard>
-
-        <SectionCard title="Experience" description="Recent roles and impact.">
-          {resume.experience.map((role, index) => (
-            <div key={`${role.company}-${index}`} className="grid gap-4 md:grid-cols-2">
-              <label className="form-control">
-                <span className="label-text">Company</span>
-                <input
-                  className="input input-bordered"
-                  value={role.company}
-                  onChange={(event) => {
-                    const next = [...resume.experience];
-                    next[index] = { ...next[index], company: event.target.value };
-                    handleChange("experience", next);
-                  }}
-                />
-              </label>
-              <label className="form-control">
-                <span className="label-text">Role</span>
-                <input
-                  className="input input-bordered"
-                  value={role.role}
-                  onChange={(event) => {
-                    const next = [...resume.experience];
-                    next[index] = { ...next[index], role: event.target.value };
-                    handleChange("experience", next);
-                  }}
-                />
-              </label>
-              <label className="form-control">
-                <span className="label-text">Start Date</span>
-                <input
-                  className="input input-bordered"
-                  value={role.startDate}
-                  onChange={(event) => {
-                    const next = [...resume.experience];
-                    next[index] = { ...next[index], startDate: event.target.value };
-                    handleChange("experience", next);
-                  }}
-                />
-              </label>
-              <label className="form-control">
-                <span className="label-text">End Date</span>
-                <input
-                  className="input input-bordered"
-                  value={role.endDate}
-                  onChange={(event) => {
-                    const next = [...resume.experience];
-                    next[index] = { ...next[index], endDate: event.target.value };
-                    handleChange("experience", next);
-                  }}
-                />
-              </label>
-              <label className="form-control md:col-span-2">
-                <span className="label-text">Highlights</span>
-                <textarea
-                  className="textarea textarea-bordered min-h-24"
-                  value={role.bullets.join("\n")}
-                  onChange={(event) => {
-                    const next = [...resume.experience];
-                    next[index] = {
-                      ...next[index],
-                      bullets: event.target.value
-                        .split("\n")
-                        .map((item) => item.trim())
-                        .filter(Boolean),
-                    };
-                    handleChange("experience", next);
-                  }}
-                />
-              </label>
-            </div>
-          ))}
-        </SectionCard>
-
-        <SectionCard title="Projects" description="Side projects and launches.">
-          {resume.projects.map((project, index) => (
-            <div key={`${project.name}-${index}`} className="grid gap-4 md:grid-cols-2">
-              <label className="form-control">
-                <span className="label-text">Name</span>
-                <input
-                  className="input input-bordered"
-                  value={project.name}
-                  onChange={(event) => {
-                    const next = [...resume.projects];
-                    next[index] = { ...next[index], name: event.target.value };
-                    handleChange("projects", next);
-                  }}
-                />
-              </label>
-              <label className="form-control">
-                <span className="label-text">Stack</span>
-                <input
-                  className="input input-bordered"
-                  value={project.stack.join(", ")}
-                  onChange={(event) => {
-                    const next = [...resume.projects];
-                    next[index] = {
-                      ...next[index],
-                      stack: event.target.value
-                        .split(",")
-                        .map((item) => item.trim())
-                        .filter(Boolean),
-                    };
-                    handleChange("projects", next);
-                  }}
-                />
-              </label>
-              <label className="form-control md:col-span-2">
-                <span className="label-text">Description</span>
-                <textarea
-                  className="textarea textarea-bordered min-h-20"
-                  value={project.description}
-                  onChange={(event) => {
-                    const next = [...resume.projects];
-                    next[index] = {
-                      ...next[index],
-                      description: event.target.value,
-                    };
-                    handleChange("projects", next);
-                  }}
-                />
-              </label>
-              <label className="form-control">
-                <span className="label-text">Repo URL</span>
-                <input
-                  className="input input-bordered"
-                  value={project.repoUrl}
-                  onChange={(event) => {
-                    const next = [...resume.projects];
-                    next[index] = {
-                      ...next[index],
-                      repoUrl: event.target.value,
-                    };
-                    handleChange("projects", next);
-                  }}
-                />
-              </label>
-              <label className="form-control">
-                <span className="label-text">Live URL</span>
-                <input
-                  className="input input-bordered"
-                  value={project.liveUrl}
-                  onChange={(event) => {
-                    const next = [...resume.projects];
-                    next[index] = {
-                      ...next[index],
-                      liveUrl: event.target.value,
-                    };
-                    handleChange("projects", next);
-                  }}
-                />
-              </label>
-            </div>
-          ))}
-        </SectionCard>
-
-        <SectionCard title="Education" description="Programs and degrees.">
-          {resume.education.map((item, index) => (
-            <div key={`${item.school}-${index}`} className="grid gap-4 md:grid-cols-2">
-              <label className="form-control">
-                <span className="label-text">School</span>
-                <input
-                  className="input input-bordered"
-                  value={item.school}
-                  onChange={(event) => {
-                    const next = [...resume.education];
-                    next[index] = { ...next[index], school: event.target.value };
-                    handleChange("education", next);
-                  }}
-                />
-              </label>
-              <label className="form-control">
-                <span className="label-text">Program</span>
-                <input
-                  className="input input-bordered"
-                  value={item.program}
-                  onChange={(event) => {
-                    const next = [...resume.education];
-                    next[index] = { ...next[index], program: event.target.value };
-                    handleChange("education", next);
-                  }}
-                />
-              </label>
-              <label className="form-control">
-                <span className="label-text">Start Date</span>
-                <input
-                  className="input input-bordered"
-                  value={item.startDate}
-                  onChange={(event) => {
-                    const next = [...resume.education];
-                    next[index] = {
-                      ...next[index],
-                      startDate: event.target.value,
-                    };
-                    handleChange("education", next);
-                  }}
-                />
-              </label>
-              <label className="form-control">
-                <span className="label-text">End Date</span>
-                <input
-                  className="input input-bordered"
-                  value={item.endDate}
-                  onChange={(event) => {
-                    const next = [...resume.education];
-                    next[index] = { ...next[index], endDate: event.target.value };
-                    handleChange("education", next);
-                  }}
-                />
-              </label>
-            </div>
-          ))}
-        </SectionCard>
-
-        <SectionCard title="Theme" description="Template and visual style.">
-          <div className="grid gap-4 md:grid-cols-2">
-            <label className="form-control">
-              <span className="label-text">Template</span>
-              <select
-                className="select select-bordered"
-                value={resume.ui.template}
-                onChange={(event) =>
-                  handleChange("ui", {
-                    ...resume.ui,
-                    template: event.target.value as "classic" | "modern",
-                  })
-                }
-              >
-                <option value="classic">Classic</option>
-                <option value="modern">Modern</option>
-              </select>
-            </label>
-            <label className="form-control">
-              <span className="label-text">Theme</span>
-              <input
-                className="input input-bordered"
-                value={resume.ui.theme}
-                onChange={(event) =>
-                  handleChange("ui", {
-                    ...resume.ui,
-                    theme: event.target.value,
-                  })
-                }
-              />
-            </label>
-          </div>
-        </SectionCard>
-      </form>
+          <ResumePreview resume={localResume} />
+        </div>
+      </div>
     </div>
   );
 }
