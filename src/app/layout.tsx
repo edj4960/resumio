@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ProfileProvider } from "@/components/ProfileProvider";
 import TopNav from "@/components/TopNav";
 import "./globals.css";
 
@@ -28,12 +29,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="min-h-screen bg-base-200 text-base-content">
-          <TopNav />
-          <main className="mx-auto w-full max-w-6xl px-6 py-10">
-            {children}
-          </main>
-        </div>
+        <ProfileProvider>
+          <div className="min-h-screen bg-base-200 text-base-content">
+            <TopNav />
+            <main className="mx-auto w-full max-w-6xl px-6 py-10">
+              {children}
+            </main>
+          </div>
+        </ProfileProvider>
       </body>
     </html>
   );

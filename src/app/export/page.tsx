@@ -1,8 +1,10 @@
+"use client";
+
 import SectionCard from "@/components/SectionCard";
-import { defaultResume } from "@/lib/schema/resume";
+import { useProfile } from "@/components/ProfileProvider";
 
 export default function ExportPage() {
-  const resume = defaultResume;
+  const { resume, profileId } = useProfile();
 
   return (
     <div className="space-y-8">
@@ -29,8 +31,8 @@ export default function ExportPage() {
 
       <div className="alert alert-info">
         <span>
-          The default resume for {resume.basics.name} is loaded and ready for
-          export when the pipeline is implemented.
+          The resume for {profileId} ({resume.basics.name}) is loaded and ready
+          for export when the pipeline is implemented.
         </span>
       </div>
     </div>

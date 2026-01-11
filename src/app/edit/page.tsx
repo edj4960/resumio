@@ -1,8 +1,49 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
 import SectionCard from "@/components/SectionCard";
-import { defaultResume } from "@/lib/schema/resume";
+import { useProfile } from "@/components/ProfileProvider";
 
 export default function EditPage() {
-  const resume = defaultResume;
+  const {
+    resume,
+    updateResume,
+    saveActiveProfile,
+    saving,
+    lastSavedAt,
+    resetProfile,
+    deleteProfile,
+    profileId,
+    isValid,
+    isReady,
+  } = useProfile();
+  const [resetting, setResetting] = useState(false);
+  const initialLoad = useRef(true);
+
+  const lastSavedLabel = useMemo(() => {
+    if (!lastSavedAt) {
+      return "Never";
+    }
+    return new Date(lastSavedAt).toLocaleTimeString();
+  }, [lastSavedAt]);
+
+  useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+    if (initialLoad.current) {
+      initialLoad.current = false;
+      return;
+    }
+    const handle = window.setTimeout(() => {
+      void saveActiveProfile();
+    }, 500);
+    return () => window.clearTimeout(handle);
+  }, [isReady, resume, saveActiveProfile]);
+
+  const handleChange = <K extends keyof typeof resume>(key: K, value: typeof resume[K]) => {
+    updateResume({ ...resume, [key]: value });
+  };
 
   return (
     <div className="space-y-8">
@@ -14,8 +55,61 @@ export default function EditPage() {
         </p>
       </div>
 
-      <div className="alert alert-warning">
-        <span>Storage is stubbed. Changes are not saved yet.</span>
+      {!isValid ? (
+        <div className="alert alert-warning">
+          <span>
+            The stored profile data was invalid. We reset it to the default
+            resume.
+          </span>
+        </div>
+      ) : null}
+
+      <div className="card bg-base-100 shadow">
+        <div className="card-body flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 className="text-lg font-semibold">Profile controls</h2>
+            <p className="text-sm text-base-content/70">
+              Active profile: <span className="font-medium">{profileId}</span>
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              className="btn btn-outline btn-sm"
+              type="button"
+              onClick={async () => {
+                setResetting(true);
+                await resetProfile();
+                setResetting(false);
+              }}
+            >
+              {resetting ? "Resetting..." : "Reset to default"}
+            </button>
+            <button
+              className="btn btn-outline btn-sm"
+              type="button"
+              disabled={profileId === "default"}
+              onClick={async () => {
+                if (profileId === "default") {
+                  return;
+                }
+                await deleteProfile(profileId);
+              }}
+            >
+              Delete profile
+            </button>
+            {profileId === "default" ? (
+              <span className="text-xs text-base-content/60">
+                Default profile cannot be deleted.
+              </span>
+            ) : null}
+          </div>
+        </div>
+      </div>
+
+      <div className="alert alert-info">
+        <span>
+          {saving ? "Saving..." : "Saved"} • Last saved: {lastSavedLabel}
+        </span>
       </div>
 
       <form className="space-y-8">
@@ -25,28 +119,52 @@ export default function EditPage() {
               <span className="label-text">Name</span>
               <input
                 className="input input-bordered"
-                defaultValue={resume.basics.name}
+                value={resume.basics.name}
+                onChange={(event) =>
+                  handleChange("basics", {
+                    ...resume.basics,
+                    name: event.target.value,
+                  })
+                }
               />
             </label>
             <label className="form-control">
               <span className="label-text">Title</span>
               <input
                 className="input input-bordered"
-                defaultValue={resume.basics.title}
+                value={resume.basics.title}
+                onChange={(event) =>
+                  handleChange("basics", {
+                    ...resume.basics,
+                    title: event.target.value,
+                  })
+                }
               />
             </label>
             <label className="form-control">
               <span className="label-text">Email</span>
               <input
                 className="input input-bordered"
-                defaultValue={resume.basics.email}
+                value={resume.basics.email}
+                onChange={(event) =>
+                  handleChange("basics", {
+                    ...resume.basics,
+                    email: event.target.value,
+                  })
+                }
               />
             </label>
             <label className="form-control">
               <span className="label-text">Location</span>
               <input
                 className="input input-bordered"
-                defaultValue={resume.basics.location}
+                value={resume.basics.location}
+                onChange={(event) =>
+                  handleChange("basics", {
+                    ...resume.basics,
+                    location: event.target.value,
+                  })
+                }
               />
             </label>
           </div>
@@ -54,7 +172,13 @@ export default function EditPage() {
             <span className="label-text">Summary</span>
             <textarea
               className="textarea textarea-bordered min-h-32"
-              defaultValue={resume.basics.summary}
+              value={resume.basics.summary}
+              onChange={(event) =>
+                handleChange("basics", {
+                  ...resume.basics,
+                  summary: event.target.value,
+                })
+              }
             />
           </label>
         </SectionCard>
@@ -65,21 +189,39 @@ export default function EditPage() {
               <span className="label-text">GitHub</span>
               <input
                 className="input input-bordered"
-                defaultValue={resume.links.github}
+                value={resume.links.github}
+                onChange={(event) =>
+                  handleChange("links", {
+                    ...resume.links,
+                    github: event.target.value,
+                  })
+                }
               />
             </label>
             <label className="form-control">
               <span className="label-text">LinkedIn</span>
               <input
                 className="input input-bordered"
-                defaultValue={resume.links.linkedin}
+                value={resume.links.linkedin}
+                onChange={(event) =>
+                  handleChange("links", {
+                    ...resume.links,
+                    linkedin: event.target.value,
+                  })
+                }
               />
             </label>
             <label className="form-control">
               <span className="label-text">Website</span>
               <input
                 className="input input-bordered"
-                defaultValue={resume.links.website}
+                value={resume.links.website}
+                onChange={(event) =>
+                  handleChange("links", {
+                    ...resume.links,
+                    website: event.target.value,
+                  })
+                }
               />
             </label>
           </div>
@@ -88,46 +230,86 @@ export default function EditPage() {
         <SectionCard title="Skills" description="Comma-separated list.">
           <textarea
             className="textarea textarea-bordered min-h-28"
-            defaultValue={resume.skills.join(", ")}
+            value={resume.skills.join(", ")}
+            onChange={(event) =>
+              handleChange(
+                "skills",
+                event.target.value
+                  .split(",")
+                  .map((item) => item.trim())
+                  .filter(Boolean),
+              )
+            }
           />
         </SectionCard>
 
         <SectionCard title="Experience" description="Recent roles and impact.">
-          {resume.experience.map((role) => (
-            <div key={role.company} className="grid gap-4 md:grid-cols-2">
+          {resume.experience.map((role, index) => (
+            <div key={`${role.company}-${index}`} className="grid gap-4 md:grid-cols-2">
               <label className="form-control">
                 <span className="label-text">Company</span>
                 <input
                   className="input input-bordered"
-                  defaultValue={role.company}
+                  value={role.company}
+                  onChange={(event) => {
+                    const next = [...resume.experience];
+                    next[index] = { ...next[index], company: event.target.value };
+                    handleChange("experience", next);
+                  }}
                 />
               </label>
               <label className="form-control">
                 <span className="label-text">Role</span>
                 <input
                   className="input input-bordered"
-                  defaultValue={role.role}
+                  value={role.role}
+                  onChange={(event) => {
+                    const next = [...resume.experience];
+                    next[index] = { ...next[index], role: event.target.value };
+                    handleChange("experience", next);
+                  }}
                 />
               </label>
               <label className="form-control">
                 <span className="label-text">Start Date</span>
                 <input
                   className="input input-bordered"
-                  defaultValue={role.startDate}
+                  value={role.startDate}
+                  onChange={(event) => {
+                    const next = [...resume.experience];
+                    next[index] = { ...next[index], startDate: event.target.value };
+                    handleChange("experience", next);
+                  }}
                 />
               </label>
               <label className="form-control">
                 <span className="label-text">End Date</span>
                 <input
                   className="input input-bordered"
-                  defaultValue={role.endDate}
+                  value={role.endDate}
+                  onChange={(event) => {
+                    const next = [...resume.experience];
+                    next[index] = { ...next[index], endDate: event.target.value };
+                    handleChange("experience", next);
+                  }}
                 />
               </label>
               <label className="form-control md:col-span-2">
                 <span className="label-text">Highlights</span>
                 <textarea
                   className="textarea textarea-bordered min-h-24"
-                  defaultValue={role.bullets.join("\n")}
+                  value={role.bullets.join("\n")}
+                  onChange={(event) => {
+                    const next = [...resume.experience];
+                    next[index] = {
+                      ...next[index],
+                      bullets: event.target.value
+                        .split("\n")
+                        .map((item) => item.trim())
+                        .filter(Boolean),
+                    };
+                    handleChange("experience", next);
+                  }}
                 />
               </label>
             </div>
@@ -135,41 +317,81 @@ export default function EditPage() {
         </SectionCard>
 
         <SectionCard title="Projects" description="Side projects and launches.">
-          {resume.projects.map((project) => (
-            <div key={project.name} className="grid gap-4 md:grid-cols-2">
+          {resume.projects.map((project, index) => (
+            <div key={`${project.name}-${index}`} className="grid gap-4 md:grid-cols-2">
               <label className="form-control">
                 <span className="label-text">Name</span>
                 <input
                   className="input input-bordered"
-                  defaultValue={project.name}
+                  value={project.name}
+                  onChange={(event) => {
+                    const next = [...resume.projects];
+                    next[index] = { ...next[index], name: event.target.value };
+                    handleChange("projects", next);
+                  }}
                 />
               </label>
               <label className="form-control">
                 <span className="label-text">Stack</span>
                 <input
                   className="input input-bordered"
-                  defaultValue={project.stack.join(", ")}
+                  value={project.stack.join(", ")}
+                  onChange={(event) => {
+                    const next = [...resume.projects];
+                    next[index] = {
+                      ...next[index],
+                      stack: event.target.value
+                        .split(",")
+                        .map((item) => item.trim())
+                        .filter(Boolean),
+                    };
+                    handleChange("projects", next);
+                  }}
                 />
               </label>
               <label className="form-control md:col-span-2">
                 <span className="label-text">Description</span>
                 <textarea
                   className="textarea textarea-bordered min-h-20"
-                  defaultValue={project.description}
+                  value={project.description}
+                  onChange={(event) => {
+                    const next = [...resume.projects];
+                    next[index] = {
+                      ...next[index],
+                      description: event.target.value,
+                    };
+                    handleChange("projects", next);
+                  }}
                 />
               </label>
               <label className="form-control">
                 <span className="label-text">Repo URL</span>
                 <input
                   className="input input-bordered"
-                  defaultValue={project.repoUrl}
+                  value={project.repoUrl}
+                  onChange={(event) => {
+                    const next = [...resume.projects];
+                    next[index] = {
+                      ...next[index],
+                      repoUrl: event.target.value,
+                    };
+                    handleChange("projects", next);
+                  }}
                 />
               </label>
               <label className="form-control">
                 <span className="label-text">Live URL</span>
                 <input
                   className="input input-bordered"
-                  defaultValue={project.liveUrl}
+                  value={project.liveUrl}
+                  onChange={(event) => {
+                    const next = [...resume.projects];
+                    next[index] = {
+                      ...next[index],
+                      liveUrl: event.target.value,
+                    };
+                    handleChange("projects", next);
+                  }}
                 />
               </label>
             </div>
@@ -177,34 +399,57 @@ export default function EditPage() {
         </SectionCard>
 
         <SectionCard title="Education" description="Programs and degrees.">
-          {resume.education.map((item) => (
-            <div key={item.school} className="grid gap-4 md:grid-cols-2">
+          {resume.education.map((item, index) => (
+            <div key={`${item.school}-${index}`} className="grid gap-4 md:grid-cols-2">
               <label className="form-control">
                 <span className="label-text">School</span>
                 <input
                   className="input input-bordered"
-                  defaultValue={item.school}
+                  value={item.school}
+                  onChange={(event) => {
+                    const next = [...resume.education];
+                    next[index] = { ...next[index], school: event.target.value };
+                    handleChange("education", next);
+                  }}
                 />
               </label>
               <label className="form-control">
                 <span className="label-text">Program</span>
                 <input
                   className="input input-bordered"
-                  defaultValue={item.program}
+                  value={item.program}
+                  onChange={(event) => {
+                    const next = [...resume.education];
+                    next[index] = { ...next[index], program: event.target.value };
+                    handleChange("education", next);
+                  }}
                 />
               </label>
               <label className="form-control">
                 <span className="label-text">Start Date</span>
                 <input
                   className="input input-bordered"
-                  defaultValue={item.startDate}
+                  value={item.startDate}
+                  onChange={(event) => {
+                    const next = [...resume.education];
+                    next[index] = {
+                      ...next[index],
+                      startDate: event.target.value,
+                    };
+                    handleChange("education", next);
+                  }}
                 />
               </label>
               <label className="form-control">
                 <span className="label-text">End Date</span>
                 <input
                   className="input input-bordered"
-                  defaultValue={item.endDate}
+                  value={item.endDate}
+                  onChange={(event) => {
+                    const next = [...resume.education];
+                    next[index] = { ...next[index], endDate: event.target.value };
+                    handleChange("education", next);
+                  }}
                 />
               </label>
             </div>
@@ -215,7 +460,16 @@ export default function EditPage() {
           <div className="grid gap-4 md:grid-cols-2">
             <label className="form-control">
               <span className="label-text">Template</span>
-              <select className="select select-bordered" defaultValue="modern">
+              <select
+                className="select select-bordered"
+                value={resume.ui.template}
+                onChange={(event) =>
+                  handleChange("ui", {
+                    ...resume.ui,
+                    template: event.target.value as "classic" | "modern",
+                  })
+                }
+              >
                 <option value="classic">Classic</option>
                 <option value="modern">Modern</option>
               </select>
@@ -224,7 +478,13 @@ export default function EditPage() {
               <span className="label-text">Theme</span>
               <input
                 className="input input-bordered"
-                defaultValue={resume.ui.theme}
+                value={resume.ui.theme}
+                onChange={(event) =>
+                  handleChange("ui", {
+                    ...resume.ui,
+                    theme: event.target.value,
+                  })
+                }
               />
             </label>
           </div>
