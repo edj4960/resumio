@@ -94,6 +94,16 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     void init();
   }, [loadProfile, refreshProfiles]);
 
+  useEffect(() => {
+    if (typeof document === "undefined") {
+      return;
+    }
+    const theme = resume.ui.theme?.trim();
+    if (theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+    }
+  }, [resume.ui.theme]);
+
   const setActiveProfile = useCallback(
     async (nextProfileId: string) => {
       await loadProfile(nextProfileId);

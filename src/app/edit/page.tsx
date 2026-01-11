@@ -11,6 +11,7 @@ import ExperienceEditor from "@/components/editor/ExperienceEditor";
 import ProjectsEditor from "@/components/editor/ProjectsEditor";
 import EducationEditor from "@/components/editor/EducationEditor";
 import { defaultResume, type Resume } from "@/lib/schema/resume";
+import { daisyThemes } from "@/lib/ui/themes";
 
 type ResumeAction =
   | { type: "set"; payload: Resume }
@@ -297,8 +298,8 @@ export default function EditPage() {
               </label>
               <label className="form-control">
                 <span className="label-text">Theme</span>
-                <input
-                  className="input input-bordered"
+                <select
+                  className="select select-bordered"
                   value={localResume.ui.theme}
                   onChange={(event) =>
                     updateSection((resumeState) => ({
@@ -306,7 +307,13 @@ export default function EditPage() {
                       ui: { ...resumeState.ui, theme: event.target.value },
                     }))
                   }
-                />
+                >
+                  {daisyThemes.map((theme) => (
+                    <option key={theme} value={theme}>
+                      {theme}
+                    </option>
+                  ))}
+                </select>
               </label>
             </div>
           </SectionCard>
