@@ -5,15 +5,18 @@ type ClassicTemplateProps = {
   density?: "comfortable" | "compact";
 };
 
-const sectionTitleClass = "text-xs uppercase tracking-[0.2em] text-base-content/60";
+const sectionTitleClass =
+  "resume-accent text-xs uppercase tracking-[0.2em] text-base-content/60";
 
 export default function ClassicTemplate({ resume, density = "comfortable" }: ClassicTemplateProps) {
   const tight = density === "compact";
 
   return (
-    <div className="resume-root preview-card rounded-xl border border-base-300 bg-base-100 p-8 shadow-sm">
+    <div className="resume-root resume-surface preview-card rounded-xl border border-base-300 bg-base-100 p-8 shadow-sm">
       <header className="space-y-2 border-b border-base-200 pb-4">
-        <h1 className="text-3xl font-semibold">{resume.basics.name}</h1>
+        <h1 className="resume-accent text-3xl font-semibold">
+          {resume.basics.name}
+        </h1>
         <p className="text-base-content/70">{resume.basics.title}</p>
         <div className="flex flex-wrap gap-3 text-sm text-base-content/70">
           <span>{resume.basics.location}</span>

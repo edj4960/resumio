@@ -80,9 +80,11 @@ const setTheme = (theme) => {
 const renderResumeClassic = (resume, density = "comfortable") => {
   const tight = density === "compact";
   return `
-    <div class="resume-root preview-card rounded-xl border border-base-300 bg-base-100 p-8">
+    <div class="resume-root resume-surface preview-card rounded-xl border border-base-300 bg-base-100 p-8">
       <header class="space-y-2 border-b border-base-200 pb-4">
-        <h1 class="text-3xl font-semibold">${escapeHtml(resume.basics.name)}</h1>
+        <h1 class="resume-accent text-3xl font-semibold">${escapeHtml(
+          resume.basics.name,
+        )}</h1>
         <p class="text-base-content/70">${escapeHtml(resume.basics.title)}</p>
         <div class="flex flex-wrap gap-3 text-sm text-base-content/70">
           <span>${escapeHtml(resume.basics.location)}</span>
@@ -94,12 +96,12 @@ const renderResumeClassic = (resume, density = "comfortable") => {
       </header>
 
       <section class="${tight ? "mt-4" : "mt-6"} space-y-2">
-        <p class="section-label text-xs uppercase text-base-content/60">Summary</p>
+        <p class="resume-accent section-label text-xs uppercase text-base-content/60">Summary</p>
         <p class="text-base-content/80">${escapeHtml(resume.basics.summary)}</p>
       </section>
 
       <section class="${tight ? "mt-4" : "mt-6"} space-y-3">
-        <p class="section-label text-xs uppercase text-base-content/60">Experience</p>
+        <p class="resume-accent section-label text-xs uppercase text-base-content/60">Experience</p>
         ${
           resume.experience.length === 0
             ? `<p class="text-sm text-base-content/60">Add experience entries to highlight your roles and impact.</p>`
@@ -131,7 +133,7 @@ const renderResumeClassic = (resume, density = "comfortable") => {
       </section>
 
       <section class="${tight ? "mt-4" : "mt-6"} space-y-3">
-        <p class="section-label text-xs uppercase text-base-content/60">Projects</p>
+        <p class="resume-accent section-label text-xs uppercase text-base-content/60">Projects</p>
         ${
           resume.projects.length === 0
             ? `<p class="text-sm text-base-content/60">Add projects to showcase your portfolio work.</p>`
@@ -161,7 +163,7 @@ const renderResumeClassic = (resume, density = "comfortable") => {
       </section>
 
       <section class="${tight ? "mt-4" : "mt-6"} space-y-3">
-        <p class="section-label text-xs uppercase text-base-content/60">Skills</p>
+        <p class="resume-accent section-label text-xs uppercase text-base-content/60">Skills</p>
         ${
           resume.skills.length === 0
             ? `<p class="text-sm text-base-content/60">List your core skills to round out the resume.</p>`
@@ -176,7 +178,7 @@ const renderResumeClassic = (resume, density = "comfortable") => {
       </section>
 
       <section class="${tight ? "mt-4" : "mt-6"} space-y-3">
-        <p class="section-label text-xs uppercase text-base-content/60">Education</p>
+        <p class="resume-accent section-label text-xs uppercase text-base-content/60">Education</p>
         ${
           resume.education.length === 0
             ? `<p class="text-sm text-base-content/60">Add education entries for degrees or certifications.</p>`
@@ -207,20 +209,22 @@ const renderResumeClassic = (resume, density = "comfortable") => {
 
 const renderResumeATS = (resume) => {
   return `
-    <div class="resume-root preview-card rounded-md border border-base-300 bg-base-100 p-6">
+    <div class="resume-root resume-surface preview-card rounded-md border border-base-300 bg-base-100 p-6">
       <header class="space-y-1 border-b border-base-200 pb-3">
-        <h1 class="text-2xl font-semibold">${escapeHtml(resume.basics.name)}</h1>
+        <h1 class="resume-accent text-2xl font-semibold">${escapeHtml(
+          resume.basics.name,
+        )}</h1>
         <p class="text-sm text-base-content/70">${escapeHtml(resume.basics.title)}</p>
         <p class="text-xs text-base-content/60">${escapeHtml(
           resume.basics.location,
         )} | ${escapeHtml(resume.basics.email)} | ${escapeHtml(resume.links.website)}</p>
       </header>
       <section class="mt-4">
-        <h2 class="text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">Summary</h2>
+        <h2 class="resume-accent text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">Summary</h2>
         <p class="mt-2 text-sm text-base-content/80">${escapeHtml(resume.basics.summary)}</p>
       </section>
       <section class="mt-4">
-        <h2 class="text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">Experience</h2>
+        <h2 class="resume-accent text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">Experience</h2>
         ${
           resume.experience.length === 0
             ? `<p class="mt-2 text-sm text-base-content/60">Add experience entries to highlight your roles and impact.</p>`
@@ -251,7 +255,7 @@ const renderResumeATS = (resume) => {
         }
       </section>
       <section class="mt-4">
-        <h2 class="text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">Projects</h2>
+        <h2 class="resume-accent text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">Projects</h2>
         ${
           resume.projects.length === 0
             ? `<p class="mt-2 text-sm text-base-content/60">Add projects to showcase your portfolio work.</p>`
@@ -275,7 +279,7 @@ const renderResumeATS = (resume) => {
         }
       </section>
       <section class="mt-4">
-        <h2 class="text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">Skills</h2>
+        <h2 class="resume-accent text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">Skills</h2>
         ${
           resume.skills.length === 0
             ? `<p class="mt-2 text-sm text-base-content/60">List your core skills to round out the resume.</p>`
@@ -285,7 +289,7 @@ const renderResumeATS = (resume) => {
         }
       </section>
       <section class="mt-4">
-        <h2 class="text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">Education</h2>
+        <h2 class="resume-accent text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">Education</h2>
         ${
           resume.education.length === 0
             ? `<p class="mt-2 text-sm text-base-content/60">Add education entries for degrees or certifications.</p>`

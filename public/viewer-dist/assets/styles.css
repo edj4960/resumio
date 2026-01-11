@@ -2,6 +2,23 @@ body {
   font-family: "Inter", "Segoe UI", sans-serif;
 }
 
+.resume-surface {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+.resume-surface * {
+  color: #000000 !important;
+}
+
+.resume-surface .resume-accent {
+  color: hsl(var(--p)) !important;
+}
+
+.resume-surface .resume-muted {
+  color: #4b5563 !important;
+}
+
 .preview-card {
   box-shadow: 0 12px 24px -20px rgba(0, 0, 0, 0.25);
 }

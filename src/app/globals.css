@@ -28,6 +28,23 @@ body {
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
+.resume-surface {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+.resume-surface * {
+  color: #000000 !important;
+}
+
+.resume-surface .resume-accent {
+  color: hsl(var(--p)) !important;
+}
+
+.resume-surface .resume-muted {
+  color: #4b5563 !important;
+}
+
 .label-text {
   margin-right: 8px;
 }

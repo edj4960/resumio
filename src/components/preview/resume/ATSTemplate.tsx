@@ -6,9 +6,11 @@ type ATSTemplateProps = {
 
 export default function ATSTemplate({ resume }: ATSTemplateProps) {
   return (
-    <div className="resume-root preview-card rounded-md border border-base-300 bg-base-100 p-6 shadow-sm">
+    <div className="resume-root resume-surface preview-card rounded-md border border-base-300 bg-base-100 p-6 shadow-sm">
       <header className="space-y-1 border-b border-base-200 pb-3">
-        <h1 className="text-2xl font-semibold">{resume.basics.name}</h1>
+        <h1 className="resume-accent text-2xl font-semibold">
+          {resume.basics.name}
+        </h1>
         <p className="text-sm text-base-content/70">{resume.basics.title}</p>
         <p className="text-xs text-base-content/60">
           {resume.basics.location} | {resume.basics.email} | {resume.links.website}
@@ -16,14 +18,14 @@ export default function ATSTemplate({ resume }: ATSTemplateProps) {
       </header>
 
       <section className="mt-4">
-        <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">
+        <h2 className="resume-accent text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">
           Summary
         </h2>
         <p className="mt-2 text-sm text-base-content/80">{resume.basics.summary}</p>
       </section>
 
       <section className="mt-4">
-        <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">
+        <h2 className="resume-accent text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">
           Experience
         </h2>
         {resume.experience.length === 0 ? (
@@ -55,7 +57,7 @@ export default function ATSTemplate({ resume }: ATSTemplateProps) {
       </section>
 
       <section className="mt-4">
-        <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">
+        <h2 className="resume-accent text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">
           Projects
         </h2>
         {resume.projects.length === 0 ? (
@@ -78,7 +80,7 @@ export default function ATSTemplate({ resume }: ATSTemplateProps) {
       </section>
 
       <section className="mt-4">
-        <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">
+        <h2 className="resume-accent text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">
           Skills
         </h2>
         {resume.skills.length === 0 ? (
@@ -93,7 +95,7 @@ export default function ATSTemplate({ resume }: ATSTemplateProps) {
       </section>
 
       <section className="mt-4">
-        <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">
+        <h2 className="resume-accent text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">
           Education
         </h2>
         {resume.education.length === 0 ? (
