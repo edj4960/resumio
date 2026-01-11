@@ -37,7 +37,7 @@ export default function TopNav() {
   };
 
   return (
-    <div className="navbar bg-base-100 shadow-sm">
+    <div className="navbar bg-base-100 shadow-sm print-hidden">
       <div className="mx-auto flex w-full max-w-6xl items-center px-6">
         <div className="flex-1">
           <Link className="btn btn-ghost text-lg font-semibold" href="/">

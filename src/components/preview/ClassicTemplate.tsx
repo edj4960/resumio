@@ -4,7 +4,7 @@ const sectionTitleClass = "text-xs uppercase tracking-[0.2em] text-base-content/
 
 export default function ClassicTemplate({ resume }: { resume: Resume }) {
   return (
-    <div className="rounded-xl border border-base-300 bg-base-100 p-8 shadow-sm">
+    <div className="preview-card rounded-xl border border-base-300 bg-base-100 p-8 shadow-sm">
       <header className="space-y-2 border-b border-base-200 pb-4">
         <h1 className="text-3xl font-semibold">{resume.basics.name}</h1>
         <p className="text-base-content/70">{resume.basics.title}</p>
@@ -26,7 +26,10 @@ export default function ClassicTemplate({ resume }: { resume: Resume }) {
         <p className={sectionTitleClass}>Experience</p>
         <div className="space-y-5">
           {resume.experience.map((role, index) => (
-            <div key={`${role.company}-${index}`} className="space-y-2">
+            <div
+              key={`${role.company}-${index}`}
+              className="space-y-2 print-avoid-break"
+            >
               <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
                 <div>
                   <h2 className="text-lg font-semibold">{role.role}</h2>
@@ -50,7 +53,10 @@ export default function ClassicTemplate({ resume }: { resume: Resume }) {
         <p className={sectionTitleClass}>Projects</p>
         <div className="space-y-4">
           {resume.projects.map((project, index) => (
-            <div key={`${project.name}-${index}`} className="space-y-1">
+            <div
+              key={`${project.name}-${index}`}
+              className="space-y-1 print-avoid-break"
+            >
               <h3 className="text-base font-semibold">{project.name}</h3>
               <p className="text-sm text-base-content/70">{project.description}</p>
               <div className="flex flex-wrap gap-2 text-xs text-base-content/60">
@@ -80,7 +86,7 @@ export default function ClassicTemplate({ resume }: { resume: Resume }) {
         <p className={sectionTitleClass}>Education</p>
         <div className="space-y-3">
           {resume.education.map((item, index) => (
-            <div key={`${item.school}-${index}`}>
+            <div key={`${item.school}-${index}`} className="print-avoid-break">
               <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
                 <div>
                   <h3 className="text-base font-semibold">{item.school}</h3>

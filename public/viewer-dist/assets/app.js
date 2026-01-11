@@ -1,4 +1,5 @@
 const app = document.getElementById("app");
+const printButton = document.getElementById("print-btn");
 
 const setTheme = (theme) => {
   if (theme) {
@@ -74,7 +75,7 @@ const renderClassic = (resume) => {
           ${resume.experience
             .map(
               (role) => `
-              <div class="space-y-2">
+              <div class="space-y-2 print-avoid-break">
                 <div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
                   <div>
                     <h2 class="text-lg font-semibold">${escapeHtml(role.role)}</h2>
@@ -102,7 +103,7 @@ const renderClassic = (resume) => {
           ${resume.projects
             .map(
               (project) => `
-              <div class="space-y-1">
+              <div class="space-y-1 print-avoid-break">
                 <h3 class="text-base font-semibold">${escapeHtml(project.name)}</h3>
                 <p class="text-sm text-base-content/70">${escapeHtml(
                   project.description,
@@ -136,7 +137,7 @@ const renderClassic = (resume) => {
           ${resume.education
             .map(
               (item) => `
-              <div>
+              <div class="print-avoid-break">
                 <div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
                   <div>
                     <h3 class="text-base font-semibold">${escapeHtml(item.school)}</h3>
@@ -195,7 +196,7 @@ const renderModern = (resume) => {
             ${resume.education
               .map(
                 (item) => `
-                <div>
+                <div class="print-avoid-break">
                   <p class="font-medium">${escapeHtml(item.school)}</p>
                   <p class="text-base-content/70">${escapeHtml(item.program)}</p>
                   <p class="text-xs text-base-content/60">${escapeHtml(
@@ -226,7 +227,7 @@ const renderModern = (resume) => {
             ${resume.projects
               .map(
                 (project) => `
-                <div class="card bg-base-100 preview-card">
+                <div class="card bg-base-100 preview-card print-avoid-break">
                   <div class="card-body gap-3">
                     <h3 class="card-title text-lg">${escapeHtml(project.name)}</h3>
                     <p class="text-sm text-base-content/70">${escapeHtml(
@@ -262,7 +263,7 @@ const renderModern = (resume) => {
               ${resume.experience
                 .map(
                   (role) => `
-                  <div class="space-y-2">
+                  <div class="space-y-2 print-avoid-break">
                     <div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
                       <div>
                         <h3 class="text-base font-semibold">${escapeHtml(role.role)}</h3>
@@ -320,5 +321,9 @@ const loadResume = async () => {
     `;
   }
 };
+
+if (printButton) {
+  printButton.addEventListener("click", () => window.print());
+}
 
 loadResume();

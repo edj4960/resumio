@@ -23,7 +23,7 @@ export default function PreviewPage() {
             <span className="font-medium">{profileId}</span>.
           </p>
         </div>
-        <div className="card bg-base-100 shadow-sm">
+        <div className="card bg-base-100 shadow-sm print-hidden">
           <div className="card-body grid gap-4 md:grid-cols-2">
             <label className="form-control">
               <span className="label-text">Template</span>
@@ -54,6 +54,15 @@ export default function PreviewPage() {
                 ))}
               </select>
             </label>
+            <div className="flex items-end">
+              <button
+                className="btn btn-outline w-full md:w-auto"
+                type="button"
+                onClick={() => window.print()}
+              >
+                Export PDF
+              </button>
+            </div>
           </div>
         </div>
       </div>

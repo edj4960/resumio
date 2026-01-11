@@ -13,7 +13,12 @@
   </head>
   <body class="bg-base-200 text-base-content">
     <div class="min-h-screen px-6 py-10">
-      <div id="app" class="mx-auto w-full max-w-5xl"></div>
+      <div class="mx-auto w-full max-w-5xl">
+        <div class="flex items-center justify-end pb-4 print-hidden">
+          <button id="print-btn" class="btn btn-outline">Export PDF</button>
+        </div>
+        <div id="app"></div>
+      </div>
     </div>
     <script src="./assets/app.js" defer></script>
   </body>

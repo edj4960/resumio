@@ -3,7 +3,7 @@ import type { Resume } from "@/lib/schema/resume";
 export default function ModernTemplate({ resume }: { resume: Resume }) {
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
-      <aside className="space-y-6 rounded-2xl bg-base-100 p-6 shadow">
+      <aside className="preview-card space-y-6 rounded-2xl bg-base-100 p-6 shadow">
         <div className="space-y-2">
           <h1 className="text-3xl font-semibold">{resume.basics.name}</h1>
           <p className="text-base-content/70">{resume.basics.title}</p>
@@ -47,7 +47,7 @@ export default function ModernTemplate({ resume }: { resume: Resume }) {
           </p>
           <div className="mt-3 space-y-2 text-sm">
             {resume.education.map((item, index) => (
-              <div key={`${item.school}-${index}`}>
+              <div key={`${item.school}-${index}`} className="print-avoid-break">
                 <p className="font-medium">{item.school}</p>
                 <p className="text-base-content/70">{item.program}</p>
                 <p className="text-xs text-base-content/60">
@@ -60,7 +60,7 @@ export default function ModernTemplate({ resume }: { resume: Resume }) {
       </aside>
 
       <section className="space-y-6">
-        <div className="card bg-base-100 shadow">
+        <div className="preview-card card bg-base-100 shadow">
           <div className="card-body gap-4">
             <p className="text-xs uppercase tracking-widest text-base-content/50">
               About
@@ -76,7 +76,10 @@ export default function ModernTemplate({ resume }: { resume: Resume }) {
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             {resume.projects.map((project, index) => (
-              <div key={`${project.name}-${index}`} className="card bg-base-100 shadow">
+              <div
+                key={`${project.name}-${index}`}
+                className="preview-card card bg-base-100 shadow print-avoid-break"
+              >
                 <div className="card-body gap-3">
                   <h3 className="card-title text-lg">{project.name}</h3>
                   <p className="text-sm text-base-content/70">
@@ -99,7 +102,7 @@ export default function ModernTemplate({ resume }: { resume: Resume }) {
           </div>
         </div>
 
-        <div className="card bg-base-100 shadow">
+        <div className="preview-card card bg-base-100 shadow">
           <div className="card-body gap-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Experience</h2>
@@ -107,7 +110,10 @@ export default function ModernTemplate({ resume }: { resume: Resume }) {
             </div>
             <div className="space-y-5">
               {resume.experience.map((role, index) => (
-                <div key={`${role.company}-${index}`} className="space-y-2">
+                <div
+                  key={`${role.company}-${index}`}
+                  className="space-y-2 print-avoid-break"
+                >
                   <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
                     <div>
                       <h3 className="text-base font-semibold">{role.role}</h3>
