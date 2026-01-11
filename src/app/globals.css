@@ -38,7 +38,7 @@ body {
 }
 
 .resume-surface .resume-accent {
-  color: hsl(var(--p)) !important;
+  color: var(--color-primary) !important;
 }
 
 .resume-surface .resume-muted {
@@ -81,7 +81,6 @@ body {
   }
 
   .print-preview-shell {
-    padding: 0 !important;
     background: transparent !important;
   }
 
@@ -91,6 +90,10 @@ body {
     min-height: auto !important;
   }
 
+  .min-h-screen {
+    padding: 0 !important;
+  }
+
   .rounded-3xl,
   .rounded-xl,
   .rounded-md {
@@ -98,16 +101,6 @@ body {
   }
 
   .resume-root {
-    margin: 0 !important;
-    padding: 16px !important;
-  }
-
-  .resume-root section {
-    margin-top: 0px !important;
-  }
-
-  .resume-root header {
-    padding-bottom: 8px !important;
   }
 
   .print-avoid-break {

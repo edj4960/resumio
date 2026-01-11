@@ -60,7 +60,6 @@ export default function SidebarTemplate({ resume }: SidebarTemplateProps) {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold">Projects</h2>
-            <span className="badge badge-outline">Portfolio</span>
           </div>
           {resume.projects.length === 0 ? (
             <div className="card bg-base-100 shadow">
@@ -106,7 +105,6 @@ export default function SidebarTemplate({ resume }: SidebarTemplateProps) {
           <div className="card-body">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Experience</h2>
-              <span className="badge badge-outline">Resume</span>
             </div>
             {resume.experience.length === 0 ? (
               <p className="text-sm text-base-content/60">
