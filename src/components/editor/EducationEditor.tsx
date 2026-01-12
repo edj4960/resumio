@@ -70,7 +70,7 @@ export default function EducationEditor({ education, onChange }: EducationEditor
               Remove
             </button>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4">
             <label className="form-control">
               <span className="label-text">School</span>
               <input

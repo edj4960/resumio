@@ -89,7 +89,7 @@ export default function ProjectsEditor({ projects, onChange }: ProjectsEditorPro
               Remove
             </button>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4">
             <label className="form-control">
               <span className="label-text">Name</span>
               <input

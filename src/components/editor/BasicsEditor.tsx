@@ -16,7 +16,7 @@ export default function BasicsEditor({ basics, errors, onChange }: BasicsEditorP
   const titleErrorId = errors.title ? "basics-title-error" : undefined;
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-4">
       <label className="form-control">
         <span className="label-text">Name</span>
         <input

@@ -18,7 +18,7 @@ export default function LinksEditor({ links, errors, onChange }: LinksEditorProp
   const websiteErrorId = errors.website ? "links-website-error" : undefined;
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="grid gap-4">
       <label className="form-control">
         <span className="label-text">GitHub</span>
         <input
